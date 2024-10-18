@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { Button } from "./ShadCnComponents/ui/button";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <div>
-        <h1>hi</h1>
+      {/*This code is just to check if shadCN is working or not , later this will be removed*/}
+      <div className="h-screen w-screen flex items-center justify-center bg-zinc-100 bg-opacity-55">
+        <Button>Hi , Shad CN has been set up !</Button>
       </div>
     </>
   );
