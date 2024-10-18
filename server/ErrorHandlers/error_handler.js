@@ -1,4 +1,4 @@
-import Errorhandler from "./errorClass.js";
+import Errorhandler from "./error_class.js";
 
 const errorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
