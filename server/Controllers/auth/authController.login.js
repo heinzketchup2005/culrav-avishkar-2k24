@@ -50,15 +50,21 @@ const Login = async (req, res) => {
       return res.status(400).json({ message: "Please verify your email" });
     }
     // check if the user has paid the registration fee
-    if (user.isFeePaid === false) {
-      return res
-        .status(400)
-        .json({ message: "Please pay the registration fee" });
+    if (!email.includes("@mnnit.ac.in")) {
+      if (user.isFeePaid === false) {
+        return res
+          .status(400)
+          .json({ message: "Please pay the registration fee" });
+      }
     }
     // Create a token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
     res.status(200).json({ message: "Login successful", token, user });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
