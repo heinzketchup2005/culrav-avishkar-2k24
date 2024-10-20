@@ -7,6 +7,7 @@ import {
     downloadAllEventTeamMembersEventId,
     downloadAcceptedTeamMembers,
     downloadAcceptedTeamMembersEventId,
+    makedepartmentcoordinator,getalldepartmentcoordinators,getdepartmentcoordinatorsByDep,deletedepartmentcoordinators,verifypayment
 } from "../Controllers/admin.controller.js";
 
 const router = express.Router();
@@ -23,5 +24,10 @@ router.use(
     downloadAcceptedTeamMembersEventId
 );
 router.use("/downloadAcceptedTeamMembers", downloadAcceptedTeamMembers);
+router.post('/makedc',makedepartmentcoordinator);
+router.get('/getalldcs',getalldepartmentcoordinators);
+router.get('/getdcsBydep',getdepartmentcoordinatorsByDep);
+router.post('/deletedcs',deletedepartmentcoordinators);
+router.post('/verifypayment',verifypayment);
 
 export default router;

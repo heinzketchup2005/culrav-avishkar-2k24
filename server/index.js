@@ -24,7 +24,7 @@ app.use("/api/auth/v1", authLimiter, authRoutes);
 
 //handle every exceptions and errors before starting the server
 app.use(errorHandler);
-
+app.use("/api/admin", adminRouter);
 app.listen(3000, () => {
   console.log(`Server is listening on port : 3000`.bgCyan);
 });
