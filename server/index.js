@@ -9,12 +9,12 @@ import authRoutes from "./Routes/auth.routes.js";
 import teamRoutes from "./Routes/team.routes.js";
 dotenv.config();
 
-//connect to the mongoDB
-connectDB();
-
 const app = express();
 app.use(morgan("📋[server-log]: :method :url :status :response-time ms"));
 app.use(express.json());
+
+//connect to the mongoDB
+connectDB();
 
 // auth
 const authLimiter = rateLimit({
@@ -29,8 +29,29 @@ app.use("/api/admin/v1", adminRouter);
 app.use("/api/team/v1", teamRoutes);
 
 //handle every exceptions and errors before starting the server
+// Don't change the position of this errorHandler, because this should be the last middleware to catch all the errors.
 app.use(errorHandler);
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
   console.log(`Server is listening on port : 3000`.bgCyan);
+});
+
+//If nothing works.
+
+process.on("uncaughtException", (err) => {
+  console.log(`Error: ${err.message}`);
+  console.log(`shutting down the server due to uncaught error`.bgRed);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+process.on("unhandledRejection", (err) => {
+  console.log(`Error: ${err.message}`);
+  console.log(
+    `shutting down the server due to unhandled promise rejections`.bgRed
+  );
+  server.close(() => {
+    process.exit(1);
+  });
 });
