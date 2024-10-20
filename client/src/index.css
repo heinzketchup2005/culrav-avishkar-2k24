@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+  scroll-behavior: smooth;
+}
+
 @font-face {
   font-family: 'Bionix';
   src: url('./assets/fonts/Bionix.otf') format('truetype'); /* Adjust the path accordingly */
