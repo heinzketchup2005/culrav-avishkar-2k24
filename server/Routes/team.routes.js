@@ -1,4 +1,18 @@
 import express from "express";
+import {
+  createTeam,
+  updateTeam,
+  deleteTeam,
+  sendTeamInvite,
+  getAllTeamInvitesForAUser,
+  getMembersOfATeam,
+  acceptInvite,
+  rejectInvite,
+  userProfile,
+  updateResume,
+  getParticipatingTeamsOfAUser,
+} from "../Controllers/team.controller.js";
+
 const router = express.Router();
 
 //user must be logged in to access these routes .
