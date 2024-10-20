@@ -22,6 +22,7 @@ export default {
 			colors: {
 				customOrange: "#f54e25",
 				floral_white: "#FFFAF0",
+				silver: "#c6c6c6",
 				dark_primary: "#202020",
 				dark_secondary: "#2d2d2d",
 				background: 'hsl(var(--background))',
