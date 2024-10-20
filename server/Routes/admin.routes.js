@@ -13,15 +13,15 @@ const router = express.Router();
 router.use("/getallFeePaid", getallFeePaid);
 router.use("/getallFeeNotPaid", getallFeeNotPaid);
 router.use("/getallTeamEvents/:eventId", getallTeamEvents);
-router.use("/downloadAllEventTeamMembers", downloadAllEventTeamMembers);
 router.use(
     "/downloadAllEventTeamMembers/:eventId",
     downloadAllEventTeamMembersEventId
 );
-router.use("/downloadAcceptedTeamMembers", downloadAcceptedTeamMembers);
+router.use("/downloadAllEventTeamMembers", downloadAllEventTeamMembers);
 router.use(
     "/downloadAcceptedTeamMembers/:eventId",
     downloadAcceptedTeamMembersEventId
 );
+router.use("/downloadAcceptedTeamMembers", downloadAcceptedTeamMembers);
 
 export default router;
