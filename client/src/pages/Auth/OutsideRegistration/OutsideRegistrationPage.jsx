@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import QR from '../../pages/Auth/OutsideRegistration/qr'; 
+import { setUserDetails, setToken } from '../../store/userActions'; 
 
-const OutsideRegistrationPage = () => {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    collegeName: '',
-    idCardUrl: '',
-  });
+const OutsideRegistration = () => {
+  const dispatch = useDispatch();
+  const userDetails = useSelector((state) => state.user.details); 
+  const [showQR, setShowQR] = useState(false); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    dispatch(setUserDetails({ ...userDetails, [name]: value })); 
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
+    console.log('Form Data:', userDetails);
+
+    const allFieldsFilled = Object.values(userDetails).every((field) => field.trim() !== '');
+    if (allFieldsFilled) {
+      const token = 'sample-token-from-server'; 
+      dispatch(setToken(token)); 
+      setShowQR(true); 
+    } else {
+      alert('Please fill in all fields before submitting.'); 
+    }
   };
 
   return (
@@ -32,59 +41,60 @@ const OutsideRegistrationPage = () => {
           </a>
         </p>
 
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={formData.fullName}
-            onChange={handleChange}
-            style={styles.input}
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Enter your phone no"
-            value={formData.phone}
-            onChange={handleChange}
-            style={styles.input}
-          />
-          <input
-            type="text"
-            name="collegeName"
-            placeholder="Enter College Name"
-            value={formData.collegeName}
-            onChange={handleChange}
-            style={styles.input}
-          />
-          <input
-            type="url"
-            name="idCardUrl"
-            placeholder="Enter College ID Card Img URL"
-            value={formData.idCardUrl}
-            onChange={handleChange}
-            style={styles.input}
-          />
+        {!showQR ? (
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              value={userDetails.fullName}
+              onChange={handleChange}
+              style={styles.input}
+            />
 
-          <button
-            type="submit"
-            style={styles.registerButton}
-            onMouseEnter={(e) =>
-              (e.target.style.backgroundColor = 'rgba(245, 78, 37, 0.8)')
-            }
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = 'var(--Orange, #F54E25)')
-            }
-            onMouseDown={(e) =>
-              (e.target.style.transform = 'scale(0.98)')
-            }
-            onMouseUp={(e) =>
-              (e.target.style.transform = 'scale(1)')
-            }
-          >
-            Register
-          </button>
-        </form>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email ID"
+              value={userDetails.email}
+              onChange={handleChange}
+              style={styles.input}
+            />
+
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Enter your phone no"
+              value={userDetails.phone}
+              onChange={handleChange}
+              style={styles.input}
+            />
+
+            <input
+              type="text"
+              name="collegeName"
+              placeholder="Enter College Name"
+              value={userDetails.collegeName}
+              onChange={handleChange}
+              style={styles.input}
+            />
+
+            <input
+              type="url"
+              name="idCardUrl"
+              placeholder="Enter College ID Card Img URL"
+              value={userDetails.idCardUrl}
+              onChange={handleChange}
+              style={styles.input}
+            />
+
+            <button type="submit" style={styles.registerButton}>
+              Register
+            </button>
+          </form>
+        ) : (
+          <QR />
+        )}
       </div>
     </div>
   );
@@ -155,4 +165,5 @@ const styles = {
   },
 };
 
-export default OutsideRegistrationPage;
+
+export default OutsideRegistration;

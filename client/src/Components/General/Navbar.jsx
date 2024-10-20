@@ -1,2 +1,2 @@
-function Navbar() {}
-export default Navbar;
+function NavBar() {}
+export default NavBar;
