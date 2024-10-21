@@ -1,2 +1,4 @@
-function OutsideRegistration() {}
-export default OutsideRegistration;
+
+function OutsideRegistrationPage() {
+}
+export default OutsideRegistrationPage

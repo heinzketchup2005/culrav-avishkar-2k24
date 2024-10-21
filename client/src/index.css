@@ -63,4 +63,17 @@
   body {
     @apply bg-background text-foreground;
   }
+  @font-face {
+  font-family: 'Bionix';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/Bionix.otf') format('truetype');
+  
+  }
+  @font-face {
+  font-family: 'sftext';
+  src: url('/fonts/sftext.otf') format('truetype');
 }
+
+}
+

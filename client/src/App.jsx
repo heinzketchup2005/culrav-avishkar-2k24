@@ -1,24 +1,27 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
-  BrowserRouter as Router,
   Route,
+  BrowserRouter as Router,
   Routes,
   useLocation,
 } from "react-router-dom";
-import Home from "./pages/Home/HomePage";
-import Login from "./pages/Auth/Login/LoginPage";
-import Register from "./pages/Auth/Register/RegisterPage";
-import OutsideRegistration from "./pages/Auth/OutsideRegistration/OutsideRegistrationPage";
-import Team from "./pages/Team/TeamPage";
-import Navbar from "./Components/General/Navbar";
 import Footer from "./Components/General/Footer";
-import CulravLanding from "./pages/Culrav/LandingPage";
+import Navbar from "./Components/General/Navbar";
+import ForgetPassword from "./pages/Auth/ForgetPassword/Forgetpassword";
+import ForgetPasswordTokenVerification from "./pages/Auth/ForgetPassword/PasswordTokenVerification";
+import Login from "./pages/Auth/Login/LoginPage";
+import OutsideRegistration from "./pages/Auth/OutsideRegistration/OutsideRegistrationPage";
+import Register from "./pages/Auth/Register/RegisterPage";
+import VerifyEmail from "./pages/Auth/VerifyEmail/VerifyEmail";
+import AvishkarEvents from "./pages/Avishkar/AllEvents";
+import AvishkarEvent from "./pages/Avishkar/EventPage";
 import AvishkarLanding from "./pages/Avishkar/LandingPage";
 import CulravEvents from "./pages/Culrav/AllEvents";
-import AvishkarEvents from "./pages/Avishkar/AllEvents";
 import CulravEvent from "./pages/Culrav/EventPage";
-import AvishkarEvent from "./pages/Avishkar/EventPage";
+import CulravLanding from "./pages/Culrav/LandingPage";
+import Home from "./pages/Home/HomePage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
+import Team from "./pages/Team/TeamPage";
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -83,6 +86,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Register />} />
+        <Route path='/forget-password' element={<ForgetPassword />} />
+        <Route path="/forget-password-token-verification" element={<ForgetPasswordTokenVerification/>}/>
+        <Route path="/verify-email" element={<VerifyEmail/>}/>
         <Route path="/outside-registration" element={<OutsideRegistration />} />
         <Route path="/outside-registration/payFee" element={<PayFeesPage />} />
         <Route path="/Culrav-Landing" element={<CulravLanding />} />

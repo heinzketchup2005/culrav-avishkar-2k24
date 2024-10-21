@@ -1,3 +1,9 @@
-function HeroSection() {}
+import React from 'react'
 
-export default HeroSection;
+function HeroSection() {
+  return (
+    <div>HeroSection</div>
+  )
+}
+
+export default HeroSection
