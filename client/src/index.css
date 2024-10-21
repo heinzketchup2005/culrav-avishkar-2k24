@@ -16,6 +16,14 @@ html{
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'MOONGETTI';
+  src: url('./assets/fonts/MOON.otf') format('opentype');
+  font-weight: bold; 
+  font-style: normal;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
