@@ -41,6 +41,10 @@ const createTeam = async (req, res, next) => {
     }
 
     const newTeam = await Team.create({ teamName, leader });
+    newTeam.acceptedMembers = [...newTeam.acceptedMembers, leader];
+    ld.participatingTeam = [...ld.participatingEvents, newTeam._id];
+    await ld.save();
+    await newTeam.save();
 
     return res.status(200).json({
       ok: true,
