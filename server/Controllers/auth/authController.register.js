@@ -41,23 +41,46 @@ const Register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // check phone and college for other college.
+    if (isOtherCollege && !req.body.phone) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Phone No is Missing",
+      });
+    }
+
+    if (isOtherCollege && !req.body.college) {
+      return res.status(400).json({
+        ok: false,
+        msg: "College Name is Missing",
+      });
+    }
+
+    if (isOtherCollege) {
+      const oldUser = await User.findOne({ phone: req.body.phone });
+      if (oldUser) {
+        return res.status(400).json({
+          ok: false,
+          msg: "User with same phone No already exist",
+        });
+      }
+    }
+
     // ........................... checks end...............................
     // Hash the password
     const hashedPassword = await encryptPassword(password);
     // Create a new user
-    let user = {
+    const user = {
       name,
       email,
       password: hashedPassword,
       userName: email.split("@")[0],
+      college: isOtherCollege ? req.body.college : "MNNIT",
     };
+
     if (isOtherCollege) {
-      const { phone, college } = req.body;
-      user = {
-        ...user,
-        phone,
-        college: college || "Other",
-      };
+      const { phone } = req.body;
+      user = { ...user, phone };
     }
     const newUser = new User(user);
 
