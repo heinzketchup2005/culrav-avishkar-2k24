@@ -12,8 +12,6 @@
   "author": "Web Team Culrav Avishkar",
   "license": "ISC",
   "dependencies": {
-    "@reduxjs/toolkit": "^2.3.0",
-    "axios": "^1.7.7",
     "colors": "^1.4.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
@@ -23,8 +21,6 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
-    "react-redux": "^9.1.2",
-    "react-router-dom": "^6.27.0",
-    "redux": "^5.0.1"
+    "react-router-dom": "^6.27.0"
   }
 }
