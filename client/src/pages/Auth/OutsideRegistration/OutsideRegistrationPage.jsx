@@ -1,169 +1,111 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import QR from '../../pages/Auth/OutsideRegistration/qr'; 
-import { setUserDetails, setToken } from '../../store/userActions'; 
+import QR from './QR'; 
+import { setUserDetails, setToken } from '../../../store/userActions'; 
 
 const OutsideRegistration = () => {
   const dispatch = useDispatch();
-  const userDetails = useSelector((state) => state.user.details); 
-  const [showQR, setShowQR] = useState(false); 
+  const userDetails = useSelector((state) => state.user.details);
+  const [showQR, setShowQR] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    dispatch(setUserDetails({ ...userDetails, [name]: value })); 
+      const { name, value } = e.target;
+      dispatch(setUserDetails({ ...userDetails, [name]: value }));
+      console.log('Redux State (onChange):', { ...userDetails, [name]: value });
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form Data:', userDetails);
+      e.preventDefault();
+      console.log('Redux State (onSubmit):', userDetails);
 
-    const allFieldsFilled = Object.values(userDetails).every((field) => field.trim() !== '');
-    if (allFieldsFilled) {
-      const token = 'sample-token-from-server'; 
-      dispatch(setToken(token)); 
-      setShowQR(true); 
-    } else {
-      alert('Please fill in all fields before submitting.'); 
-    }
+      const allFieldsFilled = Object.values(userDetails).every((field) => field.trim() !== '');
+      if (allFieldsFilled) {
+          const token = 'sample-token-from-server';
+          dispatch(setToken(token));
+          setShowQR(true);
+      } else {
+          alert('Please fill in all fields before submitting.');
+      }
   };
 
   return (
-    <div style={styles.pageContainer}>
-      <div style={styles.outerBox}>
-        <h1 style={styles.heading}>
-          Outside Participation for <br /> CULRAV-AVISHKAR
-        </h1>
+      <div className="min-h-screen flex justify-center items-center bg-gray-950 p-5">
+          <div
+              className="p-10 md:p-16 rounded-lg shadow-xl space-y-5 w-full max-w-md lg:max-w-lg"
+              style={{ backgroundColor: '#2D2D2D' }}
+          >
+              <h1 className="text-3xl font-extrabold text-white text-center">
+                  Outside Participation for <br /> CULRAV-AVISHKAR
+              </h1>
 
-        <p style={styles.subText}>
-          Already got registered?{' '}
-          <a href="/login" style={styles.loginLink}>
-            Log in
-          </a>
-        </p>
+              <p className="text-white text-center">
+                  Already got registered?{' '}
+                  <a href="/login" className="text-[#F54E25] underline">
+                      Log in
+                  </a>
+              </p>
 
-        {!showQR ? (
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={userDetails.fullName}
-              onChange={handleChange}
-              style={styles.input}
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Email ID"
-              value={userDetails.email}
-              onChange={handleChange}
-              style={styles.input}
-            />
-
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Enter your phone no"
-              value={userDetails.phone}
-              onChange={handleChange}
-              style={styles.input}
-            />
-
-            <input
-              type="text"
-              name="collegeName"
-              placeholder="Enter College Name"
-              value={userDetails.collegeName}
-              onChange={handleChange}
-              style={styles.input}
-            />
-
-            <input
-              type="url"
-              name="idCardUrl"
-              placeholder="Enter College ID Card Img URL"
-              value={userDetails.idCardUrl}
-              onChange={handleChange}
-              style={styles.input}
-            />
-
-            <button type="submit" style={styles.registerButton}>
-              Register
-            </button>
-          </form>
-        ) : (
-          <QR />
-        )}
+              {!showQR ? (
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                      <input
+                          type="text"
+                          name="fullName"
+                          placeholder="Full Name"
+                          value={userDetails.fullName}
+                          onChange={handleChange}
+                          className="w-full p-3 text-white rounded"
+                          style={{ backgroundColor: '#3D3D3D' }}
+                      />
+                      <input
+                          type="email"
+                          name="email"
+                          placeholder="Email ID"
+                          value={userDetails.email}
+                          onChange={handleChange}
+                          className="w-full p-3 text-white rounded"
+                          style={{ backgroundColor: '#3D3D3D' }}
+                      />
+                      <input
+                          type="tel"
+                          name="phone"
+                          placeholder="Enter your phone no"
+                          value={userDetails.phone}
+                          onChange={handleChange}
+                          className="w-full p-3 text-white rounded"
+                          style={{ backgroundColor: '#3D3D3D' }}
+                      />
+                      <input
+                          type="text"
+                          name="collegeName"
+                          placeholder="Enter College Name"
+                          value={userDetails.collegeName}
+                          onChange={handleChange}
+                          className="w-full p-3 text-white rounded"
+                          style={{ backgroundColor: '#3D3D3D' }}
+                      />
+                      <input
+                          type="url"
+                          name="idCardUrl"
+                          placeholder="Enter College ID Card Img URL"
+                          value={userDetails.idCardUrl}
+                          onChange={handleChange}
+                          className="w-full p-3 text-white rounded"
+                          style={{ backgroundColor: '#3D3D3D' }}
+                      />
+                      <button
+                          type="submit"
+                          className="w-full p-4 text-white rounded transition"
+                          style={{ backgroundColor: '#F54E25' }}
+                      >
+                          Register
+                      </button>
+                  </form>
+              ) : (
+                  <QR />
+              )}
+          </div>
       </div>
-    </div>
   );
 };
-
-const styles = {
-  pageContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#1A1A1A',
-  },
-  outerBox: {
-    display: 'inline-flex',
-    padding: '40px 80px',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '20px',
-    backgroundColor: '#2D2D2D',
-    borderRadius: '8px',
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  heading: {
-    color: 'var(--Floral-White, #FFFAF0)',
-    textAlign: 'center',
-    fontFamily: 'Bionix',
-    fontSize: '34px',
-    fontWeight: 1000,
-    marginBottom: '10px',
-  },
-  subText: {
-    color: 'var(--Floral-White, #FFFAF0)',
-    textAlign: 'center',
-    fontFamily: '"SF Pro Text"',
-    fontSize: '16px',
-    fontWeight: 400,
-    marginBottom: '20px',
-  },
-  loginLink: {
-    color: 'var(--Orange, #F54E25)',
-    fontFamily: '"SF Pro Text"',
-    fontSize: '16px',
-    textDecoration: 'underline',
-  },
-  input: {
-    width: '100%',
-    margin: '10px 0',
-    padding: '10px',
-    fontSize: '16px',
-    color: '#FFFAF0',
-    backgroundColor: '#3D3D3D',
-    border: 'none',
-    borderRadius: '4px',
-  },
-  registerButton: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    padding: '15px 19px',
-    backgroundColor: 'var(--Orange, #F54E25)',
-    color: '#FFFAF0',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-  },
-};
-
 
 export default OutsideRegistration;

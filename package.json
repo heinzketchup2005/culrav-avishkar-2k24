@@ -12,6 +12,7 @@
   "author": "Web Team Culrav Avishkar",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "colors": "^1.4.0",
     "dotenv": "^16.4.5",

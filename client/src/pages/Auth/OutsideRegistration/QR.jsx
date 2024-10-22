@@ -23,18 +23,19 @@ const QR = () => {
 
     const formData = new FormData();
     formData.append('file', paymentScreenshot);
-    formData.append('upload_preset', process.env.REACT_APP_UPLOAD_PRESET); 
-    formData.append('cloud_name', process.env.REACT_APP_CLOUD_NAME); 
+    formData.append('upload_preset', process.env.REACT_APP_UPLOAD_PRESET);
+    formData.append('cloud_name', process.env.REACT_APP_CLOUD_NAME);
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}`, 
-        formData
-      );
+      const response = await axios.post(process.env.REACT_APP_API_URL, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      console.log('Cloudinary Response:', response.data);
       setUploadedUrl(response.data.secure_url);
       alert('Payment screenshot uploaded successfully!');
     } catch (error) {
-      console.error('Cloudinary upload failed:', error);
+      console.error('Cloudinary upload failed:', error.response?.data || error.message);
       alert('Failed to upload screenshot. Please try again.');
     } finally {
       setUploading(false);
@@ -50,119 +51,46 @@ const QR = () => {
   };
 
   return (
-    <div style={styles.pageContainer}>
-      <div style={styles.outerBox}>
-        <div style={styles.qrContainer}>
-          <div style={styles.qrPlaceholder}>
-            <p style={styles.placeholderText}>QR Code Placeholder</p>
-          </div>
-        </div>
+    <div className="min-h-screen flex justify-center items-center bg-gray-900 p-4">
+      <div
+        className="p-8 rounded-lg shadow-xl w-full max-w-xs sm:max-w-sm lg:max-w-lg xl:max-w-xl space-y-6"
+        style={{ backgroundColor: 'var(--Jet, #2D2D2D)' }}
+      >
+        <div
+          className="w-full h-64 rounded-lg"
+          style={{ backgroundColor: '#D9D9D9' }}
+        ></div>
 
         <input
           type="file"
           accept="image/*"
           onChange={handleFileUpload}
-          style={styles.uploadInput}
+          className="w-full p-3 rounded"
+          style={{ backgroundColor: 'var(--Mine-Shaft-900, #3D3D3D)', color: 'white' }}
         />
 
         <button
           onClick={uploadToCloudinary}
-          style={styles.uploadButton}
           disabled={uploading}
+          className="w-full p-4 rounded transition"
+          style={{
+            backgroundColor: uploading ? '#3D3D3D' : 'var(--Orange, #F54E25)',
+            color: 'white',
+          }}
         >
-          {uploading ? 'Uploading...' : 'Upload Payment Screenshot'}
+          {uploading ? 'Uploading...' : 'Upload payment Screenshot'}
         </button>
 
-        <button onClick={handleSubmit} style={styles.submitButton}>
+        <button
+          onClick={handleSubmit}
+          className="w-full p-4 rounded transition hover:bg-opacity-90"
+          style={{ backgroundColor: 'var(--Orange, #F54E25)', color: 'white' }}
+        >
           Submit
         </button>
       </div>
     </div>
   );
-};
-
-const styles = {
-  pageContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#1A1A1A',
-  },
-  outerBox: {
-    display: 'flex',
-    width: '433px',
-    padding: '40px',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '72px',
-    background: 'var(--Jet, #2D2D2D)',
-    borderRadius: '8px',
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  qrContainer: {
-    height: '343px',
-    flex: '1 0 0',
-    width: '100%',
-    borderRadius: '8px',
-    overflow: 'hidden',
-  },
-  qrPlaceholder: {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    background: '#FFFFFF', 
-    borderRadius: '8px',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-  },
-  placeholderText: {
-    color: '#000',
-    fontSize: '16px',
-    fontWeight: 'bold',
-  },
-  uploadInput: {
-    display: 'flex',
-    padding: '10px 19px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '10px',
-    alignSelf: 'stretch',
-    background: 'var(--Mine-Shaft-900, #3D3D3D)',
-    color: '#FFFAF0',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
-  uploadButton: {
-    display: 'flex',
-    padding: '15px 19px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '10px',
-    alignSelf: 'stretch',
-    background: 'var(--Orange, #F54E25)',
-    color: '#FFFAF0',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    marginTop: '10px',
-  },
-  submitButton: {
-    display: 'flex',
-    padding: '15px 19px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '10px',
-    alignSelf: 'stretch',
-    background: 'var(--Orange, #F54E25)',
-    color: '#FFFAF0',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-  },
 };
 
 export default QR;
