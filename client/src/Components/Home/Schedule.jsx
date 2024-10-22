@@ -100,5 +100,5 @@ custom1980:left-[8rem]">
     </div>
   );
 };
-
 export default Schedule;
+

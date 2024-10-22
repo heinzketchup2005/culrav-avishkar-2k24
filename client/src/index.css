@@ -1,11 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html{
+html {
   scroll-behavior: smooth;
 }
 
@@ -23,6 +22,10 @@ html{
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'sftext';
+  src: url('./assets/fonts/sftext.otf') format('truetype');
+}
 
 @layer base {
   :root {
@@ -79,6 +82,7 @@ html{
     --chart-5: 340 75% 55%
   }
 }
+
 @layer base {
   * {
     @apply border-border;
