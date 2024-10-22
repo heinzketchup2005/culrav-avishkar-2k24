@@ -4,6 +4,7 @@ import img_right2 from "../../assets/Home/person_right2.png"
 import img_left1 from "../../assets/Home/person_left1.png"
 import img_left2 from "../../assets/Home/person_left2.png"
 import circular_disc from "../../assets/Home/circularDisc.png"
+import HorizontalRoller from "./HorizontalRoller"
 
 function HeroSection() {
     return (
@@ -31,7 +32,8 @@ function HeroSection() {
                     <img className="w-full h-full left-0 bottom-0 absolute" src={img_center} />
                 </div>
             </div>
-
+            {/* Adding Scroller - Ayush */}
+            <HorizontalRoller/>
         </div>
     )
 
