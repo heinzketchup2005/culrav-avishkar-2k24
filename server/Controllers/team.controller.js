@@ -613,11 +613,11 @@ const leaveTeam = async (req, res, next) => {
     const currentTeamAcceptedMembers = tm.acceptedMembers;
     const userToBeRemoved = userId;
 
-    const newTeamAccptedMembers = currentTeamAcceptedMembers.filter(
+    const newTeamAcceptedMembers = currentTeamAcceptedMembers.filter(
       (us) => JSON.stringify(us) != JSON.stringify(userToBeRemoved)
     );
 
-    tm.acceptedMembers = newTeamAccptedMembers;
+    tm.acceptedMembers = newTeamAcceptedMembers;
 
     // remove this team from this user's participating teams.
     const userParticipatingTeams = user.participatingTeam;
@@ -638,6 +638,98 @@ const leaveTeam = async (req, res, next) => {
 
 const kickMember = async (req, res, next) => {
   const { leaderId, teamId, userTobeKickedId } = req.body;
+
+  if (!leaderId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "leaderId missing",
+    });
+  }
+
+  if (!teamId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "teamId is missing",
+    });
+  }
+
+  if (!userTobeKickedId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userTobeKeckedId is missing",
+    });
+  }
+
+  try {
+    const ld = await User.findById({ _id: leaderId });
+    if (!ld) {
+      return res.status(400).json({
+        ok: false,
+        msg: "leader id is invalid or does not exist in db",
+      });
+    }
+
+    const tm = await Team.findById({ _id: teamId });
+    if (!tm) {
+      return res.status(400).json({
+        ok: true,
+        msg: "team does not exist with teamId",
+      });
+    }
+
+    const userToBeKicked = await User.findById({ _id: userTobeKickedId });
+    if (!userToBeKicked) {
+      return res.status(400).json({
+        ok: false,
+        msg: "target user does not exist",
+      });
+    }
+
+    //check if the team is not participating in any event
+    const registeredEventsByThisTeam = tm.registeredEvents;
+    if (registeredEventsByThisTeam > 0) {
+      return res.status(400).json({
+        ok: false,
+        msg: "can't kick this user beacuse this team is registered for some event/events",
+      });
+    }
+
+    // check if user is authorized to kick user [only team creator can kick members]
+
+    const currentUserId = leaderId;
+    const teamLeaderId = tm.leader;
+
+    if (currentUserId != teamLeaderId) {
+      return res.status(400).json({
+        ok: false,
+        msg: "You are not authorized to kick this user",
+      });
+    }
+
+    //remove this user from team's accpeted members.
+    const currentTeamAcceptedMembers = tm.acceptedMembers;
+    const userKicking = userTobeKickedId;
+
+    const newTeamAcceptedMembers = currentTeamAcceptedMembers.filter(
+      (us) => JSON.stringify(us) != JSON.stringify(userKicking)
+    );
+
+    tm.acceptedMembers = newTeamAcceptedMembers;
+
+    //remove this team from user's participating teams
+    const currentParticipatingTeams = userToBeKicked.participatingTeam;
+    const teamToBeRemoved = teamId;
+
+    const newParticipatingTeams = currentParticipatingTeams.filter(
+      (team) => JSON.stringify(team) != JSON.stringify(teamToBeRemoved)
+    );
+    userToBeKicked.participatingTeam = newParticipatingTeams;
+
+    await tm.save();
+    await userToBeKicked.save();
+  } catch (err) {
+    next(err);
+  }
 };
 
 const getParticipatingTeamsOfAUser = async (req, res, next) => {
@@ -687,4 +779,6 @@ export {
   userProfile,
   updateResume,
   getParticipatingTeamsOfAUser,
+  leaveTeam,
+  kickMember,
 };

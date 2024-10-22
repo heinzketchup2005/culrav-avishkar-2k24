@@ -11,6 +11,8 @@ import {
   userProfile,
   updateResume,
   getParticipatingTeamsOfAUser,
+  leaveTeam,
+  kickMember,
 } from "../Controllers/team.controller.js";
 
 const router = express.Router();
@@ -27,13 +29,12 @@ router.post("/sendTeamInvite", sendTeamInvite); //testing done
 router.get("/getAllInvites/:userId", getAllTeamInvitesForAUser); //testing done
 // router.get("/getAllParticipatingTeams"); // will come into event routes.
 router.get("/getMembersOfATeam/:teamId", getMembersOfATeam); //testing done
-// router.post("/leaveTeam");
+router.post("/leaveTeam", leaveTeam);
 router.post("/acceptInvite", acceptInvite); //testing done
 router.post("/rejectInvite", rejectInvite); //testing done
 router.get("/participatingTeamsOfAUser/:userId", getParticipatingTeamsOfAUser); //testing done
 router.post("/userProfile", userProfile); //testing done
 router.post("/updateResume", updateResume); //testing done
-//router.post("/kickAMember")
-//router.delete("/deleteTeam/:teamId")
+router.post("/kickAMember", kickMember);
 
 export default router;
