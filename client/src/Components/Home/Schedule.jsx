@@ -55,10 +55,10 @@ custom1980:left-[8rem]">
 
       <div className="h-[100vh] z-20">
         <div className=" h-full z-20 bg-scheduleOrange relative md:flex md:flex-col md:justify-center md:items-center">
-          <div className="hidden z-10  md:block absolute -bottom-[9rem] -left-[4.4rem] md:left-[-2.7rem] md:bottom-[-5.5rem] scale-[0.6] md:scale-75 custom1560:left-[0rem] custom1560:scale-100 custom1980:scale-[1.2] custom1980:left-[-4px]">
+          <div className="z-10 absolute -bottom-[9rem] -left-[4.4rem] md:left-[-2.7rem] md:bottom-[-5.5rem] scale-[0.6] md:scale-75 custom1560:left-[0rem] custom1560:scale-100 custom1980:scale-[1.2] custom1980:left-[-4px]">
             <img className="relative z-10 custom1980:bottom-28 custom1980:left-8" src={girlLeft} alt="Girl Left" />
           </div>
-          <div className="md:hidden absolute -right-[4.2rem] -bottom-[9rem] md:right-[-2.7rem] md:bottom-[-5.5rem] scale-[0.6] custom1560:scale-100 custom1560:right-[0rem] md:scale-75 custom1980:scale-[1.2] custom1980:right-[-4px]">
+          <div className=" absolute z-10 -right-[4.2rem] -bottom-[9rem] md:right-[-2.7rem] md:bottom-[-5.5rem] scale-[0.6] custom1560:scale-100 custom1560:right-[0rem] md:scale-75 custom1980:scale-[1.2] custom1980:right-[-4px]">
             <img className="relative custom1980:bottom-28 custom1980:right-8" src={girlRight} alt="Girl Right" />
           </div>
           <div className="h-[15%] z-50 flex mt-7 justify-center items-center">
