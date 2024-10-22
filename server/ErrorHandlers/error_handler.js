@@ -10,11 +10,11 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (err.code === 1) {
-    const message = `Internal Server Error [MongoDD]`;
+    const message = `Internal Server Error [MongoDB]`;
     err = new Errorhandler(message, 500);
   }
   if (err.code === 8) {
-    const message = `Unknown Error [MongoDD]`;
+    const message = `Unknown Error [MongoDB]`;
     err = new Errorhandler(message, 500);
   }
 

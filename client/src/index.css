@@ -1,6 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+@font-face {
+  font-family: 'Bionix';
+  src: url('./assets/fonts/Bionix.otf') format('truetype'); /* Adjust the path accordingly */
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'MOONGETTI';
+  src: url('./assets/fonts/MOON.otf') format('opentype');
+  font-weight: bold; 
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'sftext';
+  src: url('./assets/fonts/sftext.otf') format('truetype');
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -56,6 +82,7 @@
     --chart-5: 340 75% 55%
   }
 }
+
 @layer base {
   * {
     @apply border-border;
