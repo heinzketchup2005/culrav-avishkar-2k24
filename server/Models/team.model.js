@@ -24,7 +24,7 @@ const TeamSchema = new mongoose.Schema({
     ref: "User",
   },
   registeredEvents: {
-    type: [String],
+    type: [String], // this will contain the eventId of each resgitered event by this team.
   },
 });
 
