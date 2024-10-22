@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
 const TeamSchema = new mongoose.Schema({
-  name: {
+  teamName: {
     type: String,
     required: true,
-    unique: true,
+    // unique: true,
   },
   leader: {
     type: mongoose.Schema.Types.ObjectId,
@@ -28,5 +28,5 @@ const TeamSchema = new mongoose.Schema({
   },
 });
 
-const TeamModel = mongoose.model("team", TeamSchema);
+const TeamModel = mongoose.model("Team", TeamSchema);
 export default TeamModel;

@@ -18,8 +18,7 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
-      unique: true,
+      default: null,
     },
     college: {
       type: String,
@@ -34,8 +33,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
     password: {
-      type: String,
-      required: true,
+      encryptedData: {
+        type: String,
+        required: true,
+      },
+      iv: {
+        type: String,
+        required: true,
+      },
     },
     role: {
       type: String,
