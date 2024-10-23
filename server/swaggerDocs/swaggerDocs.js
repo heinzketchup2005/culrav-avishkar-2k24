@@ -14,6 +14,39 @@
 *         email:
 *           type: string
 *         password:
+*           type: Object
+*           properties:
+*             encryptedData:
+*               type: string
+*             iv:
+*               type: string
+*         isOtherCollege:
+*           type: boolean
+*       required:
+*         - name
+*         - email
+*         - password
+*         - isOtherCollege
+*       oneOf:
+*         - properties:
+*             isOtherCollege:
+*               enum: [false]
+*         - properties:
+*             isOtherCollege:
+*               enum: [true]
+*             phoneNo:
+*               type: string
+*             collegeName:
+*               type: string
+*           required:
+*             - phoneNo
+*             - collegeName
+*     UserWithOutPassword:
+*       type: object
+*       properties:
+*         name:
+*           type: string
+*         email:
 *           type: string
 *         isOtherCollege:
 *           type: boolean
@@ -1301,4 +1334,369 @@
  *                 msg:
  *                   type: string
  *                   example: User does not exist
+ */
+
+
+// Admin Endpoints
+
+/**
+ * @swagger
+ * /api/user/v1/getallFeePaid:
+ *   get:
+ *     summary: Get all users who have paid the fee
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: Successfully fetched all fee-paid users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ok:
+ *                   type: boolean
+ *                   example: true
+ *                 msg:
+ *                   type: string
+ *                   example: Fetched successfully!
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       $ref: '#/components/schemas/UserWithOutPassword'
+ *       404:
+ *         description: No fee-paid users found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ok:
+ *                   type: boolean
+ *                   example: false
+ *                 msg:
+ *                   type: string
+ *                   example: No fee-paid users found
+ */
+
+/**
+ * @swagger
+ * /api/user/v1/getallFeeNotPaid:
+ *   get:
+ *     summary: Get all users who have not paid the fee
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: Successfully fetched all users who have not paid the fee
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       $ref: '#/components/schemas/UserWithOutPassword'
+ *       404:
+ *         description: No users found who have not paid the fee
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 msg:
+ *                   type: string
+ *                   example: No users found who have not paid the fee
+ */            
+                
+               
+/**              
+ * @swagger
+ * /api/user/v1/makedc:
+ *   post:
+ *     summary: Make a user a department coordinator (DC)
+ *     tags: [Admin]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *               department:
+ *                 type: string
+ *                 example: "Computer Science"
+ *     responses:
+ *       200:
+ *         description: Successfully changed user role to DC
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User role shifted to DC successfully"
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Bad request, missing or invalid parameters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ */
+
+/**
+ * @swagger
+ * /api/user/v1/getalldcs:
+ *   get:
+ *     summary: Get all departmental coordinators (DCs)
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: A list of all departmental coordinators
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       $ref: '#/components/schemas/User'
+ *                   
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: No departmental coordinators found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "There are no departmental coordinators"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ */
+
+
+/**
+ * @swagger
+ * /api/user/v1/getdcsBydep:
+ *   post:
+ *     summary: Get departmental coordinators by department
+ *     tags: [Admin]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               department:
+ *                 type: string
+ *             required:
+ *               - department
+ *             example:
+ *               department: "Computer Science"
+ *     responses:
+ *       200:
+ *         description: A list of departmental coordinators for the specified department
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       $ref: '#/components/schemas/User'
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       404:
+ *         description: No departmental coordinators found for the specified department
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "No departmental coordinators found for this department"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *       400:
+ *         description: Department is required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "department is required"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ */
+
+/**
+ * @swagger
+ * /api/user/v1/deletedcs:
+ *   post:
+ *     summary: Remove departmental coordinator role from a user
+ *     tags: [Admin]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *             required:
+ *               - email
+ *             example:
+ *               email: "john.doe@example.com"
+ *     responses:
+ *       200:
+ *         description: Successfully removed departmental coordinator role
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: string
+ *                   example: "dc role removed"
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Invalid email or user not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid email"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *       404:
+ *         description: User not found or user is not a departmental coordinator
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ */
+
+
+/**
+ * @swagger
+ * /api/user/v1/verifypayment:
+ *   post:
+ *     summary: Verify payment status for a user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               paymentstatus:
+ *                 type: boolean
+ *               userid:
+ *                 type: string
+ *             required:
+ *               - email
+ *               - paymentstatus
+ *               - userid
+ *             example:
+ *               email: "jane.doe@example.com"
+ *               paymentstatus: true
+ *               userid: "60c72b2f5f1b2c001c8e4e1b"
+ *     responses:
+ *       200:
+ *         description: User payment verification successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User is verified"
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Invalid input or user does not exist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid email"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *       404:
+ *         description: User verification failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "user should exist"
+ *                 success:
+ *                   type: boolean
+ *                   example: false
  */

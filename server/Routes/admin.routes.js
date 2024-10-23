@@ -11,8 +11,8 @@ import {
 } from "../Controllers/admin.controller.js";
 
 const router = express.Router();
-router.use("/getallFeePaid", getallFeePaid);
-router.use("/getallFeeNotPaid", getallFeeNotPaid);
+router.get("/getallFeePaid", getallFeePaid);
+router.get("/getallFeeNotPaid", getallFeeNotPaid);
 router.use("/getallTeamEvents/:eventId", getallTeamEvents);
 router.use(
     "/downloadAllEventTeamMembers/:eventId",
@@ -26,7 +26,7 @@ router.use(
 router.use("/downloadAcceptedTeamMembers", downloadAcceptedTeamMembers);
 router.post('/makedc',makedepartmentcoordinator);
 router.get('/getalldcs',getalldepartmentcoordinators);
-router.get('/getdcsBydep',getdepartmentcoordinatorsByDep);
+router.post('/getdcsBydep',getdepartmentcoordinatorsByDep);
 router.post('/deletedcs',deletedepartmentcoordinators);
 router.post('/verifypayment',verifypayment);
 
