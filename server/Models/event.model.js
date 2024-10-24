@@ -11,13 +11,24 @@ const EventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    participatingTeams: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: "Team",
-    },
+    participatingTeams: [
+      {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Team",
+        required: true,
+      },
+    ],
     department: {
       type: String,
       required: true,
+    },
+    maxTeamSize: {
+      type: Number,
+      default: 1,
+    },
+    minTeamSize: {
+      type: Number,
+      default: 1,
     },
   },
   { timestamps: true }

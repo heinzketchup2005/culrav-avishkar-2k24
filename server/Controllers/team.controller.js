@@ -631,6 +631,10 @@ const leaveTeam = async (req, res, next) => {
 
     await tm.save();
     await user.save();
+    res.status(200).json({
+      ok: true,
+      msg: `Left the team successfully!`,
+    });
   } catch (err) {
     next(err);
   }
@@ -672,7 +676,7 @@ const kickMember = async (req, res, next) => {
     const tm = await Team.findById({ _id: teamId });
     if (!tm) {
       return res.status(400).json({
-        ok: true,
+        ok: false,
         msg: "team does not exist with teamId",
       });
     }
@@ -727,6 +731,11 @@ const kickMember = async (req, res, next) => {
 
     await tm.save();
     await userToBeKicked.save();
+
+    res.status(200).json({
+      ok: true,
+      msg: `${userToBeKicked.name} kicked successfully!`,
+    });
   } catch (err) {
     next(err);
   }
