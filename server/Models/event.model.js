@@ -13,9 +13,8 @@ const EventSchema = new mongoose.Schema(
     },
     participatingTeams: [
       {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Team",
-        required: true,
       },
     ],
     department: {
@@ -29,6 +28,10 @@ const EventSchema = new mongoose.Schema(
     minTeamSize: {
       type: Number,
       default: 1,
+    },
+    isOpen: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
