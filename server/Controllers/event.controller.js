@@ -119,7 +119,7 @@ const registerForEvent = async (req, res, next) => {
 
     if (pdMembers.length > 0) {
       return res.status(400).json({
-        ok: true,
+        ok: false,
         msg: "Can't register, as there are some unaccepted members in team",
       });
     }
@@ -127,7 +127,7 @@ const registerForEvent = async (req, res, next) => {
     const totalLen = acMembers.length;
     if (totalLen > event.maxTeamSize) {
       return res.status(400).json({
-        ok: true,
+        ok: false,
         msg: `team size is big. only ${event.maxTeamSize} members team is allowed`,
       });
     }
@@ -168,6 +168,14 @@ const registerForEvent = async (req, res, next) => {
         });
       }
     }
+    //check if registration is open or not.
+
+    if (!event.isOpen) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Registration is closed.",
+      });
+    }
 
     // add this team to this event.
 
@@ -183,6 +191,10 @@ const registerForEvent = async (req, res, next) => {
         { event: eventId, team: teamId },
       ];
     }
+
+    // add this event to the team.
+
+    tm.registeredEvents = [...tm.registeredEvents, eventId];
 
     await event.save();
     await tm.save();
@@ -210,7 +222,7 @@ const createEvent = async (req, res, next) => {
     const event = await Event.findOne({ eventId });
     if (event) {
       return res.status(400).json({
-        ok: true,
+        ok: false,
         msg: "An event is already present with this id",
       });
     }
@@ -233,4 +245,214 @@ const createEvent = async (req, res, next) => {
   }
 };
 
-export { getAllTeamsOfAnEvent, registerForEvent, createEvent };
+// doesn't make any sense, leaving it.
+const leaveEvent = async (req, res, next) => {
+  const { teamId, eventId, userId } = req.body;
+  if (!teamId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "teamId is missing",
+    });
+  }
+
+  if (!eventId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "eventId  is missing",
+    });
+  }
+
+  if (!userId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userId is missing",
+    });
+  }
+
+  try {
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: "userId is invalid",
+      });
+    }
+
+    const tm = await Team.findById({ _id: teamId });
+    if (!tm) {
+      return res.status(400).json({
+        ok: false,
+        msg: "teamId is invalid",
+      });
+    }
+
+    const event = await Event.findOne({ eventId });
+    if (!event) {
+      return res.status(400).json({
+        ok: false,
+        msg: "eventId is invalid",
+      });
+    }
+
+    //check if user is authorized to leave the event.
+
+    const leaderId = JSON.stringify(tm.leader);
+    const currentUserId = JSON.stringify(userId);
+    if (leaderId != currentUserId) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Only leader can leave the event",
+      });
+    }
+
+    // check is event is open or not
+
+    if (!event.isOpen) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Event has been closed, can't leave the team",
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateStatusOfAnEvent = async (req, res, next) => {
+  const { status, userId, eventId } = req.body;
+
+  if (!status) {
+    return res.status(400).json({
+      ok: false,
+      msg: "status is missing",
+    });
+  }
+
+  if (!userId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userId is missing",
+    });
+  }
+
+  if (!eventId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "eventId is missing",
+    });
+  }
+
+  try {
+    const event = await Event.findOne({ eventId });
+
+    if (!event) {
+      return res.status(400).json({
+        ok: false,
+        msg: "invalid eventId",
+      });
+    }
+
+    event.isOpen = status;
+    event.save();
+    res.status(200).json({
+      ok: true,
+      msg: "status updated.",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAllParticipatingEventsOfAUser = async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userId is missing",
+    });
+  }
+
+  try {
+    const user = await User.findById({ _id: userId })
+      .populate({
+        path: "participatingEvents.event", // Populating the event field
+        model: Event,
+      })
+      .populate({
+        path: "participatingEvents.team", // Populating the team field
+        model: Team,
+      });
+
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: "User not found",
+      });
+    }
+
+    const participatingEvents = user.participatingEvents;
+
+    res.status(200).json({
+      ok: true,
+      msg: "successfully retrieved!",
+      participatingEvents,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getAllParticipantsOfAnEvent = async (req, res, next) => {
+  const { eventId } = req.params;
+
+  if (!eventId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "eventId missing",
+    });
+  }
+
+  try {
+    const event = await Event.findOne({ eventId }).populate({
+      path: "participatingTeams",
+      model: Team,
+      populate: {
+        path: "acceptedMembers",
+        model: User,
+      },
+    });
+
+    if (!event) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Invalid eventId",
+      });
+    }
+
+    const totalTeams = event.participatingTeams;
+
+    const members = [];
+
+    for (let i = 0; i < totalTeams.length; i++) {
+      members = [...members, totalTeams[i].acceptedMembers];
+    }
+
+    res.status(200).json({
+      ok: true,
+      msg: "fetched successfully!",
+      members,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export {
+  getAllTeamsOfAnEvent,
+  registerForEvent,
+  createEvent,
+  updateStatusOfAnEvent,
+  getAllParticipatingEventsOfAUser,
+  getAllParticipantsOfAnEvent,
+};
