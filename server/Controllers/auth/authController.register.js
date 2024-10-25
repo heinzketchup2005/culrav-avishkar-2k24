@@ -56,7 +56,7 @@ const Register = async (req, res) => {
     }
 
     if (isOtherCollege) {
-      const oldUser = await User.findOne({college: "MNNIT" ,phone: req.body.phone });
+      const oldUser = await User.findOne({college: { $ne: "MNNIT" },phone: req.body.phone });
       if (oldUser) {
         return res.status(400).json({
           ok: false,
