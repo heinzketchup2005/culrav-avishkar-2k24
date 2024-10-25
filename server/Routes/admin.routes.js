@@ -25,11 +25,11 @@ router.use(
     "/downloadAcceptedTeamMembers/:eventId",isAdmin,
     downloadAcceptedTeamMembersEventId
 );
-router.use("/downloadAcceptedTeamMembers", downloadAcceptedTeamMembers);
-router.post('/makedc',makedepartmentcoordinator);
-router.get('/getalldcs',getalldepartmentcoordinators);
-router.get('/getdcsBydep',getdepartmentcoordinatorsByDep);
-router.post('/deletedcs',deletedepartmentcoordinators);
-router.post('/verifypayment',verifypayment);
+router.use("/downloadAcceptedTeamMembers",isAdmin,downloadAcceptedTeamMembers);
+router.post('/makedc',isFestivalSecretary,makedepartmentcoordinator);
+router.get('/getalldcs',isFestivalSecretary,getalldepartmentcoordinators);
+router.get('/getdcsBydep',isFestivalSecretary,getdepartmentcoordinatorsByDep);
+router.post('/deletedcs',isFestivalSecretary,deletedepartmentcoordinators);
+router.post('/verifypayment',isFestivalSecretary,verifypayment);
 
 export default router;
