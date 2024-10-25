@@ -11,10 +11,10 @@ import {
 
 const router = express.Router();
 
-router.post("/createEvent", createEvent);
-router.get("/getAllTeamsOfAnEvent/:eventId", getAllTeamsOfAnEvent);
-router.post("/registerForEvent", registerForEvent);
-router.post("/updateStatusOfAnEvent", updateStatusOfAnEvent);
+router.post("/createEvent", createEvent); //testing Done
+router.get("/getAllTeamsOfAnEvent/:eventId", getAllTeamsOfAnEvent); //testing Done
+router.post("/registerForEvent", registerForEvent); //testing Done
+router.post("/updateStatusOfAnEvent", updateStatusOfAnEvent); //testing Done
 router.get(
   "/getAllParticipantsOfAnEvent/:eventId",
   getAllParticipantsOfAnEvent

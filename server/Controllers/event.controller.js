@@ -59,6 +59,13 @@ const registerForEvent = async (req, res, next) => {
     });
   }
 
+  if (!userId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userId missing",
+    });
+  }
+
   try {
     // check if eventId is valid
     const event = await Event.findOne({ eventId }).populate({
@@ -149,15 +156,15 @@ const registerForEvent = async (req, res, next) => {
     // get all the registered teams and their members of this event.
     // and check if any of the currentTeam's members are already registered with some other team
     const allTeams = event.participatingTeams;
-    const allMembers = [];
+    var allMembers = [];
 
     for (let i = 0; i < allTeams.length; i++) {
-      const currTeam = allTeams[i];
-      const currTeamMembers = currTeam.acceptedMembers;
+      var currTeam = allTeams[i];
+      var currTeamMembers = currTeam.acceptedMembers;
       allMembers = [...allMembers, currTeamMembers];
     }
 
-    const currTeamMembers = tm.acceptedMembers;
+    var currTeamMembers = tm.acceptedMembers;
 
     for (let i = 0; i < currTeamMembers.length; i++) {
       if (allMembers.includes(currTeamMembers[i])) {
@@ -179,8 +186,8 @@ const registerForEvent = async (req, res, next) => {
     // add this team to this event.
 
     const currRegisteredTeams = event.participatingTeams;
-    currRegisteredTeams = [...currRegisteredTeams, teamId];
-    event.participatingTeams = currRegisteredTeams;
+    const newCurrRegisteredTeams = [...currRegisteredTeams, teamId];
+    event.participatingTeams = newCurrRegisteredTeams;
 
     // add this (event with team) to users participating events.
 
@@ -189,7 +196,7 @@ const registerForEvent = async (req, res, next) => {
     for (let i = 0; i < accMembers.length; i++) {
       accMembers[i].participatingEvents = [
         ...accMembers[i].participatingEvents,
-        { event: eventId, team: teamId },
+        { event: event._id, team: teamId },
       ];
       await accMembers[i].save();
     }
