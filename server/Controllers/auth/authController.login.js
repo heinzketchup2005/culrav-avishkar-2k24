@@ -37,6 +37,7 @@ const Login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
     // Compare the password
+    console.log(password);
     const match = await isMatch(
       password,
       user.password.encryptedData,
