@@ -22,6 +22,20 @@ const Register = async (req, res) => {
   try {
     // ............................. checks start ...........................
     if (isOtherCollege) {
+      // check phone and college for other college.
+      if (!req.body.phone) {
+        return res.status(400).json({
+          ok: false,
+          msg: "Phone No is Missing",
+        });
+      }
+
+      if (!req.body.college) {
+        return res.status(400).json({
+          ok: false,
+          msg: "College Name is Missing",
+        });
+      }
       const { phone } = req.body;
       if (!checkOtherCollegeEmail(email) || !checkPhone(phone)) {
         return res.status(400).json({ message: "Invalid email or phone" });
@@ -41,23 +55,8 @@ const Register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // check phone and college for other college.
-    if (isOtherCollege && !req.body.phone) {
-      return res.status(400).json({
-        ok: false,
-        msg: "Phone No is Missing",
-      });
-    }
-
-    if (isOtherCollege && !req.body.college) {
-      return res.status(400).json({
-        ok: false,
-        msg: "College Name is Missing",
-      });
-    }
-
     if (isOtherCollege) {
-      const oldUser = await User.findOne({ phone: req.body.phone });
+      const oldUser = await User.findOne({college: { $ne: "MNNIT" },phone: req.body.phone });
       if (oldUser) {
         return res.status(400).json({
           ok: false,
@@ -70,7 +69,7 @@ const Register = async (req, res) => {
     // Hash the password
     const hashedPassword = await encryptPassword(password);
     // Create a new user
-    const user = {
+    let user = {
       name,
       email,
       password: hashedPassword,
