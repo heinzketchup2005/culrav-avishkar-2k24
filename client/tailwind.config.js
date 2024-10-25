@@ -10,14 +10,18 @@ export default {
       bebas: ['Bebas Neue', 'sans-serif'],
       bionix: ['Bionix', 'sans-serif'],
       moon: ['"MOONGETTI"'], // Added
+      Sfpro: ['"Sfpro"'], // Added
+      Manrope: ['"Manrope"'], // Added
     },
     extend: {
       screens: {
         'xs': '450px',
-        custom1110: '1110px',   // Added
-        custom1560: '1560px',   // Added
-        custom1840: '1840px',   // Added
-        custom1980: '1980px',   // Added
+        custom1110: '1110px',   
+        custom1000: '1000px',   
+        custom1560: '1560px',   
+        custom1840: '1840px',   
+        custom1980: '1980px',  
+        custom1400: '1400px', // Added
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -70,11 +74,15 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        navlink: "#FFFAF0",               // Added
-        register: "#F54E25",              // Added
-        scheduleOrange: "#F54E25",        // Added
-        scheduleLargeText: "#2D2D2D",     // Added
-        floralWhite: '#FFFAF0',           // Added
+        navlink: "#FFFAF0",               
+        register: "#F54E25",              
+        scheduleOrange: "#F54E25",        
+        scheduleLargeText: "#2D2D2D",     
+        floralWhite: '#FFFAF0',           
+        lightMineshaft: "#3D3D3D", // Added
+        veryLightMineShaft: "#B0B0B0", // Added
+        medMineShaft: "#6D6D6D", // Added
+        mineShaft: '#B0B0B0', // Added
       },
     },
   },
