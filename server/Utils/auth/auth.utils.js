@@ -5,7 +5,7 @@ export function checkOtherCollegeEmail(email) {
 }
 
 export function checkEmail(email) {
-  const emailRegex = /^[a-zA-Z]+\.[0-9]{8}@mnnit\.ac\.in$/;
+  const emailRegex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@mnnit\.ac\.in$/;
   return emailRegex.test(email);
 }
 
