@@ -19,6 +19,7 @@ import AvishkarEvents from "./pages/Avishkar/AllEvents";
 import CulravEvent from "./pages/Culrav/EventPage";
 import AvishkarEvent from "./pages/Avishkar/EventPage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
+// import UserProfilePage from "./pages/UserDashboard/UserProfilePage";
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -92,6 +93,8 @@ function App() {
         <Route path="/AvishkarEvents" element={<AvishkarEvents />} />
         <Route path="/AvishkarEventPage" element={<AvishkarEvent />} />
         <Route path="/team" element={<Team />} />
+        {/* just to check i added  */}
+        {/* <Route path="/UserDashboard" element={<UserProfilePage />} />   */}
       </Routes>
       <Footer />
     </Router>

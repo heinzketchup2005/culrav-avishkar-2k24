@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@200..800&display=swap');
 
 
 @tailwind base;
@@ -19,6 +20,20 @@ html{
 @font-face {
   font-family: 'MOONGETTI';
   src: url('./assets/fonts/MOON.otf') format('opentype');
+  font-weight: bold; 
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('./assets/fonts/Bionix.otf') format('opentype');
+  font-weight: normal; 
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sfpro';
+  src: url('./assets/fonts/Sfpro.otf') format('opentype');
   font-weight: bold; 
   font-style: normal;
 }
@@ -86,4 +101,14 @@ html{
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Adding scroll-bar hidden in userDashboard Number of team member selct-options */
+.scrollbar-hidden {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; 
 }
