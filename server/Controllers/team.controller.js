@@ -84,6 +84,21 @@ const updateTeam = async (req, res, next) => {
       });
     }
 
+    const registeredEventsByThisTeam = oldtm.registeredEvents;
+    if (registeredEventsByThisTeam.length > 0) {
+      return res.status(400).json({
+        ok: false,
+        msg: "This team is already registered for some event/events",
+      });
+    }
+
+    if (oldtm.teamName === teamName) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Same team name provided as old one",
+      });
+    }
+
     const updatedTeam = await Team.findByIdAndUpdate(
       { _id: teamId },
       { teamName: teamName },
@@ -117,6 +132,14 @@ const deleteTeam = async (req, res, next) => {
       return res.status(400).json({
         ok: false,
         msg: "Team does not exist, can't delete",
+      });
+    }
+
+    const registeredEventsByThisTeam = tm.registeredEvents;
+    if (registeredEventsByThisTeam.length > 0) {
+      return res.status(400).json({
+        ok: false,
+        msg: "This team is already registered for some event/events",
       });
     }
 
@@ -541,6 +564,172 @@ const updateResume = async (req, res, next) => {
 
 const leaveTeam = async (req, res, next) => {
   const { userId, teamId } = req.body;
+
+  if (!teamId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "teamId missing, can't leave this team",
+    });
+  }
+
+  if (!userId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userId missing, can't leave this team",
+    });
+  }
+
+  try {
+    const user = await User.findById({ _id: userId });
+
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Not authorized to leave this team",
+      });
+    }
+
+    const tm = await Team.findById({ _id: teamId });
+
+    if (!tm) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Team does not exist",
+      });
+    }
+
+    // check if this team is already registered for any event.
+
+    const registeredEventsByThisTeam = tm.registeredEvents;
+    if (registeredEventsByThisTeam.length > 0) {
+      return res.status(400).json({
+        ok: false,
+        msg: "this team is already participating in some event/events, so can's leave team right now",
+      });
+    }
+
+    // remove this user from team's accepted members
+
+    const currentTeamAcceptedMembers = tm.acceptedMembers;
+    const userToBeRemoved = userId;
+
+    const newTeamAcceptedMembers = currentTeamAcceptedMembers.filter(
+      (us) => JSON.stringify(us) != JSON.stringify(userToBeRemoved)
+    );
+
+    tm.acceptedMembers = newTeamAcceptedMembers;
+
+    // remove this team from this user's participating teams.
+    const userParticipatingTeams = user.participatingTeam;
+
+    const teamToBeRemoved = teamId;
+    const newUserParticipatingTeams = userParticipatingTeams.filter(
+      (team) => JSON.stringify(team) != JSON.stringify(teamToBeRemoved)
+    );
+
+    user.participatingTeam = newUserParticipatingTeams;
+
+    await tm.save();
+    await user.save();
+  } catch (err) {
+    next(err);
+  }
+};
+
+const kickMember = async (req, res, next) => {
+  const { leaderId, teamId, userTobeKickedId } = req.body;
+
+  if (!leaderId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "leaderId missing",
+    });
+  }
+
+  if (!teamId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "teamId is missing",
+    });
+  }
+
+  if (!userTobeKickedId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userTobeKeckedId is missing",
+    });
+  }
+
+  try {
+    const ld = await User.findById({ _id: leaderId });
+    if (!ld) {
+      return res.status(400).json({
+        ok: false,
+        msg: "leader id is invalid or does not exist in db",
+      });
+    }
+
+    const tm = await Team.findById({ _id: teamId });
+    if (!tm) {
+      return res.status(400).json({
+        ok: true,
+        msg: "team does not exist with teamId",
+      });
+    }
+
+    const userToBeKicked = await User.findById({ _id: userTobeKickedId });
+    if (!userToBeKicked) {
+      return res.status(400).json({
+        ok: false,
+        msg: "target user does not exist",
+      });
+    }
+
+    //check if the team is not participating in any event
+    const registeredEventsByThisTeam = tm.registeredEvents;
+    if (registeredEventsByThisTeam > 0) {
+      return res.status(400).json({
+        ok: false,
+        msg: "can't kick this user beacuse this team is registered for some event/events",
+      });
+    }
+
+    // check if user is authorized to kick user [only team creator can kick members]
+
+    const currentUserId = leaderId;
+    const teamLeaderId = tm.leader;
+
+    if (currentUserId != teamLeaderId) {
+      return res.status(400).json({
+        ok: false,
+        msg: "You are not authorized to kick this user",
+      });
+    }
+
+    //remove this user from team's accpeted members.
+    const currentTeamAcceptedMembers = tm.acceptedMembers;
+    const userKicking = userTobeKickedId;
+
+    const newTeamAcceptedMembers = currentTeamAcceptedMembers.filter(
+      (us) => JSON.stringify(us) != JSON.stringify(userKicking)
+    );
+
+    tm.acceptedMembers = newTeamAcceptedMembers;
+
+    //remove this team from user's participating teams
+    const currentParticipatingTeams = userToBeKicked.participatingTeam;
+    const teamToBeRemoved = teamId;
+
+    const newParticipatingTeams = currentParticipatingTeams.filter(
+      (team) => JSON.stringify(team) != JSON.stringify(teamToBeRemoved)
+    );
+    userToBeKicked.participatingTeam = newParticipatingTeams;
+
+    await tm.save();
+    await userToBeKicked.save();
+  } catch (err) {
+    next(err);
+  }
 };
 
 const getParticipatingTeamsOfAUser = async (req, res, next) => {
@@ -590,4 +779,6 @@ export {
   userProfile,
   updateResume,
   getParticipatingTeamsOfAUser,
+  leaveTeam,
+  kickMember,
 };

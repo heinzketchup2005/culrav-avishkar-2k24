@@ -12,7 +12,7 @@ router.post("/register", Register);
 // Login route
 router.post("/login", Login);
 
-// Verify token route
+// Verify token route / verify Email
 router.post("/verify", VerifyToken);
 
 // Forgot password route

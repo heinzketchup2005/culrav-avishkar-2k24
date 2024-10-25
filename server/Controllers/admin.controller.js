@@ -403,7 +403,7 @@ const makedepartmentcoordinator = async (req, res, next) => {
     if (!department) {
         return next(new Error('Department not found'));
     }
-
+    
     try {
         const user = await User.findOne({ email });
         if (!user) {
@@ -415,7 +415,6 @@ const makedepartmentcoordinator = async (req, res, next) => {
         user.department = department;
         user.role = 'dc';
         await user.save();
-
         return res.status(200).json({ message: 'User role shifted to DC successfully', success: 'true' });
     } catch (err) {
         console.log(err);
