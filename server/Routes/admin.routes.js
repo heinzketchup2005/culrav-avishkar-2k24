@@ -12,8 +12,8 @@ import {
 import {AuthenticateToken,isAdmin,isDepartmentCoordinator,isFestivalSecretary} from '../Middlewares/auth.middleware.js'
 
 const router = express.Router();
-router.use("/getallFeePaid",isAdmin,getallFeePaid);
-router.use("/getallFeeNotPaid",isAdmin,getallFeeNotPaid);
+router.get("/getallFeePaid",isAdmin,getallFeePaid);
+router.get("/getallFeeNotPaid",isAdmin,getallFeeNotPaid);
 router.use("/getallTeamEvents/:eventId",isAdmin,getallTeamEvents);
 router.use(
     "/downloadAllEventTeamMembers/:eventId",
