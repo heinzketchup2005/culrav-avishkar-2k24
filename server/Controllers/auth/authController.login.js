@@ -37,6 +37,7 @@ const Login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
     // Compare the password
+    console.log(password);
     const match = await isMatch(
       password,
       user.password.encryptedData,
@@ -59,7 +60,17 @@ const Login = async (req, res) => {
     }
     // Create a token
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        userName: user.userName,
+        college: user.college,
+        gender: user.gender,
+        participatingTeam: user.participatingTeam,
+        pendingTeam: user.pendingTeam,
+        participatingEvents: user.participatingEvents,
+      },
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",

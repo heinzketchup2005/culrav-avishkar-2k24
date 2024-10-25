@@ -7,14 +7,15 @@ import errorHandler from "./ErrorHandlers/error_handler.js";
 import adminRouter from "./Routes/admin.routes.js";
 import authRoutes from "./Routes/auth.routes.js";
 import teamRoutes from "./Routes/team.routes.js";
+import cors from "cors";
 import swaggerUI from "swagger-ui-express";
 import swaggerSpec from "./swaggerDocs/swaggerOptions.js";
-
 dotenv.config();
 
 const app = express();
 app.use(morgan("📋[server-log]: :method :url :status :response-time ms"));
 app.use(express.json());
+app.use(cors());
 
 // Connect to the MongoDB
 connectDB();
@@ -58,7 +59,9 @@ process.on("uncaughtException", (err) => {
 
 process.on("unhandledRejection", (err) => {
   console.log(`Error: ${err.message}`);
-  console.log(`Shutting down the server due to unhandled promise rejections`.bgRed);
+  console.log(
+    `Shutting down the server due to unhandled promise rejections`.bgRed
+  );
   server.close(() => {
     process.exit(1);
   });
