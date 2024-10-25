@@ -42,7 +42,7 @@ const createTeam = async (req, res, next) => {
 
     const newTeam = await Team.create({ teamName, leader });
     newTeam.acceptedMembers = [...newTeam.acceptedMembers, leader];
-    ld.participatingTeam = [...ld.participatingEvents, newTeam._id];
+    ld.participatingTeam = [...ld.participatingTeam, newTeam._id];
     await ld.save();
     await newTeam.save();
 
@@ -116,7 +116,7 @@ const updateTeam = async (req, res, next) => {
 };
 
 const deleteTeam = async (req, res, next) => {
-  const { teamId } = req.params;
+  const { teamId, userId } = req.params;
 
   if (!teamId) {
     return res.status(400).json({
@@ -125,8 +125,24 @@ const deleteTeam = async (req, res, next) => {
     });
   }
 
+  if (!userId) {
+    return res.status(400).json({
+      ok: false,
+      msg: "userId missing",
+    });
+  }
+
   try {
-    const tm = await Team.findById({ _id: teamId });
+    const tm = await Team.findById({ _id: teamId }).populate([
+      {
+        path: "acceptedMembers",
+        model: User,
+      },
+      {
+        path: "pendingMembers",
+        model: User,
+      },
+    ]);
 
     if (!tm) {
       return res.status(400).json({
@@ -135,12 +151,52 @@ const deleteTeam = async (req, res, next) => {
       });
     }
 
+    const user = await User.findById({ _id: userId });
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        msg: "userId is invalid",
+      });
+    }
+
+    //only leader is allowed to delete the team
+    if (JSON.stringify(tm.leader) != JSON.stringify(userId)) {
+      return res.status(400).json({
+        ok: false,
+        msg: "Only leader can delete the team",
+      });
+    }
+
+    // check if this team is already registered in some event.
     const registeredEventsByThisTeam = tm.registeredEvents;
     if (registeredEventsByThisTeam.length > 0) {
       return res.status(400).json({
         ok: false,
         msg: "This team is already registered for some event/events",
       });
+    }
+    //first remove all the references of this team. [otherwise it will cause deletion anomaly]
+
+    // remove this team from all users participating team
+    const acMembers = tm.acceptedMembers;
+
+    for (let i = 0; i < acMembers.length; i++) {
+      const index = acMembers[i].participatingTeam.indexOf(teamId);
+      if (index !== -1) {
+        acMembers[i].participatingTeam.splice(index, 1); // Remove one element at the found index
+      }
+      await acMembers[i].save();
+    }
+
+    //remove this team from all users pending team.
+    const pdMembers = tm.pendingMembers;
+
+    for (let i = 0; i < pdMembers.length; i++) {
+      const index = pdMembers[i].pendingTeam.indexOf(teamId);
+      if (index !== -1) {
+        pdMembers[i].pendingTeam.splice(index, 1); // Remove one element at the found index
+      }
+      await pdMembers[i].save();
     }
 
     const deletedTeam = await Team.findByIdAndDelete({ _id: teamId });
@@ -157,6 +213,8 @@ const deleteTeam = async (req, res, next) => {
 
 const sendTeamInvite = async (req, res, next) => {
   const { teamName, sendToEmail, leaderId } = req.body;
+
+  //{teamName, leaderId} combo of this is unique in team collection
 
   if (!teamName) {
     return res.status(400).json({
@@ -405,8 +463,8 @@ const acceptInvite = async (req, res, next) => {
     const newAcceptedMembers = [...acceptedMembersOfTeam, userId];
     tm.acceptedMembers = newAcceptedMembers;
 
-    tm.save();
-    user.save();
+    await tm.save();
+    await user.save();
 
     res.status(200).json({
       ok: true,
@@ -608,6 +666,24 @@ const leaveTeam = async (req, res, next) => {
       });
     }
 
+    //check if leader want to leave the team.
+
+    if (JSON.stringify(tm.leader) === JSON.stringify(userId)) {
+      return res.status(400).json({
+        ok: false,
+        msg: "leader can't leave the team, however you can delete the team.",
+      });
+    }
+
+    //check if this user is in the team or not.
+
+    if (!tm.acceptedMembers.includes(userId)) {
+      return res.status(400).json({
+        ok: false,
+        msg: "this user is not in the team",
+      });
+    }
+
     // remove this user from team's accepted members
 
     const currentTeamAcceptedMembers = tm.acceptedMembers;
@@ -707,6 +783,24 @@ const kickMember = async (req, res, next) => {
       return res.status(400).json({
         ok: false,
         msg: "You are not authorized to kick this user",
+      });
+    }
+
+    //team leader can't kick himself from the team.
+
+    if (JSON.stringify(userToBeKicked) === JSON.stringify(tm.leader)) {
+      return res.status(400).json({
+        ok: false,
+        msg: "leader can't kick himself, however leader can delete the team",
+      });
+    }
+
+    //check if userToBeKicked is in the team
+
+    if (!tm.acceptedMembers.includes(userTobeKickedId)) {
+      return res.status(400).json({
+        ok: false,
+        msg: "user is not the in team",
       });
     }
 
