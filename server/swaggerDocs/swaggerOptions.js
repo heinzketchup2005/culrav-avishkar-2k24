@@ -4,9 +4,9 @@ import swaggerJSDoc from 'swagger-jsdoc';
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'Your API',
+    title: 'Avishkar API Docs',
     version: '1.0.0',
-    description: 'A sample API',
+    description: 'An API Docs for the Avishkar-Culrav',
     contact: {
       name: 'Your Name',
       email: 'your-email@example.com',

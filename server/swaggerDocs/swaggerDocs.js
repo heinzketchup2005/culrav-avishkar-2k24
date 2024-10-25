@@ -14,6 +14,36 @@
 *         email:
 *           type: string
 *         password:
+*           type: string
+*         isOtherCollege:
+*           type: boolean
+*       required:
+*         - name
+*         - email
+*         - password
+*         - isOtherCollege
+*       oneOf:
+*         - properties:
+*             isOtherCollege:
+*               enum: [false]
+*         - properties:
+*             isOtherCollege:
+*               enum: [true]
+*             phoneNo:
+*               type: string
+*             collegeName:
+*               type: string
+*           required:
+*             - phoneNo
+*             - collegeName
+*     resUser:
+*       type: object
+*       properties:
+*         name:
+*           type: string
+*         email:
+*           type: string
+*         password:
 *           type: Object
 *           properties:
 *             encryptedData:
@@ -41,7 +71,7 @@
 *           required:
 *             - phoneNo
 *             - collegeName
-*     UserWithOutPassword:
+*     resUserWithOutPassword:
 *       type: object
 *       properties:
 *         name:
@@ -70,47 +100,47 @@
 *             - phoneNo
 *             - collegeName
 *     Team:
-*      type: object
-*      properties:
-*        _id:
-*          type: string
-*          description: The auto-generated ID of the team
-*        teamName:
-*          type: string
-*          description: The name of the team
-*          example: "Team Alpha"
-*        leader:
-*          type: string
-*          description: The user ID of the team leader
-*          example: "60c72b2f9b1e8c1a4f8e5d4d"
-*        size:
-*          type: number
-*          description: The size of the team
-*          example: 1
-*        acceptedMembers:
-*          type: array
-*          items:
-*            type: string
-*            description: An array of user IDs who have accepted to join the team
-*        pendingMembers:
-*          type: array
-*          items:
-*            type: string
-*            description: An array of user IDs who are pending to join the team
-*        registeredEvents:
-*          type: array
-*          items:
-*            type: string
-*            description: An array of event IDs that the team has registered for
-*            example: ["event1", "event2"]
-*        createdAt:
-*          type: string
-*          format: date-time
-*          description: The creation date of the team
-*        updatedAt:
-*          type: string
-*          format: date-time
-*          description: The last update date of the team
+*       type: object
+*       properties:
+*         _id:
+*           type: string
+*           description: The auto-generated ID of the team
+*         teamName:
+*           type: string
+*           description: The name of the team
+*           example: "Team Alpha"
+*         leader:
+*           type: string
+*           description: The user ID of the team leader
+*           example: "60c72b2f9b1e8c1a4f8e5d4d"
+*         size:
+*           type: number
+*           description: The size of the team
+*           example: 1
+*         acceptedMembers:
+*           type: array
+*           items:
+*             type: string
+*             description: An array of user IDs who have accepted to join the team
+*         pendingMembers:
+*           type: array
+*           items:
+*             type: string
+*             description: An array of user IDs who are pending to join the team
+*         registeredEvents:
+*           type: array
+*           items:
+*             type: string
+*             description: An array of event IDs that the team has registered for
+*             example: ["event1", "event2"]
+*         createdAt:
+*           type: string
+*           format: date-time
+*           description: The creation date of the team
+*         updatedAt:
+*           type: string
+*           format: date-time
+*           description: The last update date of the team
 */
 
 /**
@@ -141,6 +171,16 @@
  *                 message:
  *                   type: string
  *                   example: Login successful
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                      token:
+ *                        type: string
+ *                      user:
+ *                        type: object
+ *                        schema:
+ *                          $ref: '#/components/schemas/resUser'
+ *                          
  *       400:
  *         description: Unauthorized
  *         content:
@@ -1096,7 +1136,7 @@
  *                     properties:
  *                       _id:
  *                         type: string
- *                       description: The ID of the team
+ *                         description: The ID of the team
  *       400:
  *         description: Bad request for missing userId
  *         content:
@@ -1158,8 +1198,8 @@
  *                   example: Fetched Successfully
  *                 user:
  *                   type: object
- *                   properties:
- *                     $ref: '#/components/schemas/User'
+ *                   schema:
+ *                     $ref: '#/components/schemas/resUser'
  *       400:
  *         description: Bad request for missing email
  *         content:
@@ -1225,7 +1265,7 @@
  *                   example: Resume updated successfully!
  *                 user:
  *                   type: object
- *                   properties:
+ *                   schema:
  *                     $ref: '#/components/schemas/User'
  *       400:
  *         description: Bad request for missing email or resume link
@@ -1363,8 +1403,8 @@
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       $ref: '#/components/schemas/UserWithOutPassword'
+ *                     schema:
+ *                       $ref: '#/components/schemas/resUserWithOutPassword'
  *       404:
  *         description: No fee-paid users found
  *         content:
@@ -1401,8 +1441,8 @@
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       $ref: '#/components/schemas/UserWithOutPassword'
+ *                     schema:
+ *                       $ref: '#/components/schemas/resUserWithOutPassword'
  *       404:
  *         description: No users found who have not paid the fee
  *         content:
@@ -1484,8 +1524,8 @@
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       $ref: '#/components/schemas/User'
+ *                     schema:
+ *                       $ref: '#/components/schemas/resUser'
  *                   
  *                 success:
  *                   type: boolean
@@ -1537,8 +1577,8 @@
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       $ref: '#/components/schemas/User'
+ *                     schema:
+ *                       $ref: '#/components/schemas/resUser'
  *                 success:
  *                   type: boolean
  *                   example: true
