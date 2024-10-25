@@ -1,22 +1,24 @@
 import { Button } from "@/ShadCnComponents/ui/button";
 import Input from "@/ShadCnComponents/ui/Input";
-import { login } from "@/store/authSlice";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../utils/useAuth";
+import { login } from "@/store/authSlice";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:3000", // Base URL for all requests
+  baseURL: "http://localhost:3000",
 });
 
 function Login() {
   const { register, handleSubmit } = useForm();
   const [submit, setSubmit] = useState(false);
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useAuth();
@@ -36,7 +38,8 @@ function Login() {
       if (response.status === 200) {
         // Store token in local storage
         localStorage.setItem("token", responseData.token);
-        dispatch(login({ token: responseData.token, user: responseData.user }));
+        dispatch(login({ user: responseData.user }));
+
         navigate("/");
 
         // console.log('Stored token:', localStorage.getItem('token'));
@@ -89,13 +92,25 @@ function Login() {
               },
             })}
           />
-
-          <Input
-            type="password"
-            placeholder="Enter password"
-            className="w-full font-sftext bg-[#3D3D3D] text-[#B0B0B0]"
-            {...register("password", { required: true })}
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              className="w-full font-sftext bg-[#3D3D3D] text-[#B0B0B0]"
+              {...register("password", { required: true })}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-2.5"
+            >
+              {showPassword ? (
+                <EyeOff className="animate-pulse text-gray-500" />
+              ) : (
+                <Eye className="animate-pulse text-gray-500" />
+              )}
+            </button>
+          </div>
           {error && <div className="text-[#F54E25]">*{error}</div>}
           {/* Forgot Password Link */}
           <Link

@@ -17,6 +17,7 @@ function PayRegistrationFeePage() {
   const [uploadedUrl, setUploadedUrl] = useState(null);
   const [isBigSize, setIsBigSize] = useState(false);
   const [currentError, setCurrentError] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -61,7 +62,7 @@ function PayRegistrationFeePage() {
         isPaymentVerified: false,
       }); // NOTE: if the field key (isPaymentVerified) is something else , so update is here as well
       if (res.status == 201) {
-        alert("User registered successfully");
+        console.log("User registered successfully");
         setSubmitting(false);
         navigate("/verify-email", { state: { email: prevData.email } });
       }
@@ -77,7 +78,7 @@ function PayRegistrationFeePage() {
   // function to upload to cloudinary
   const uploadToCloudinary = async (paymentScreenshot) => {
     if (!paymentScreenshot) {
-      alert("Please upload a screenshot first.");
+      console.log("Please upload a screenshot first.");
       setUploading(false);
       return false;
     }
@@ -99,14 +100,14 @@ function PayRegistrationFeePage() {
 
       console.log("Cloudinary Response:", response.data);
       setUploadedUrl(response.data.secure_url);
-      alert("Payment screenshot uploaded successfully!");
+      console.log("Payment screenshot uploaded successfully!");
     } catch (error) {
       setCurrentError(error);
       console.error(
         "Cloudinary upload failed:",
         error.response?.data || error.message
       );
-      alert("Failed to upload screenshot. Please try again.");
+      console.log("Failed to upload screenshot. Please try again.");
       return false;
     }
     return true;
