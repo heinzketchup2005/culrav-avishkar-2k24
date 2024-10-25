@@ -184,12 +184,14 @@ const registerForEvent = async (req, res, next) => {
 
     // add this (event with team) to users participating events.
 
-    for (let i = 0; i < tm.acceptedMembers.length; i++) {
-      tm.acceptedMembers[i].participatingEvents = [
-        ...tm.acceptedMembers[i].participatingEvents,
+    const accMembers = tm.acceptedMembers;
+
+    for (let i = 0; i < accMembers.length; i++) {
+      accMembers[i].participatingEvents = [
+        ...accMembers[i].participatingEvents,
         { event: eventId, team: teamId },
       ];
-      await tm.acceptedMembers[i].save();
+      await accMembers[i].save();
     }
 
     // add this event to the team.
