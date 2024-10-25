@@ -24,7 +24,7 @@ const createTeam = async (req, res, next) => {
   try {
     const ld = await User.findById({ _id: leader });
     if (!ld) {
-      return res.status(400).json({
+      return res.status(422).json({
         ok: false,
         msg: "can't create team as leaderId is not valid or leader is not registered",
       });
@@ -33,7 +33,7 @@ const createTeam = async (req, res, next) => {
     const tm = await Team.findOne({ teamName, leader });
 
     if (tm) {
-      return res.status(400).json({
+      return res.status(409).json({
         ok: false,
         msg: "Team with same name already exists",
         team: tm,
@@ -78,7 +78,7 @@ const updateTeam = async (req, res, next) => {
     const oldtm = await Team.findOne({ _id: teamId });
 
     if (!oldtm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "TeamId is invalid or Team Does not exist",
       });
@@ -86,14 +86,14 @@ const updateTeam = async (req, res, next) => {
 
     const registeredEventsByThisTeam = oldtm.registeredEvents;
     if (registeredEventsByThisTeam.length > 0) {
-      return res.status(400).json({
+      return res.status(409).json({
         ok: false,
         msg: "This team is already registered for some event/events",
       });
     }
 
     if (oldtm.teamName === teamName) {
-      return res.status(400).json({
+      return res.status(409).json({
         ok: false,
         msg: "Same team name provided as old one",
       });
@@ -129,7 +129,7 @@ const deleteTeam = async (req, res, next) => {
     const tm = await Team.findById({ _id: teamId });
 
     if (!tm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "Team does not exist, can't delete",
       });
@@ -137,7 +137,7 @@ const deleteTeam = async (req, res, next) => {
 
     const registeredEventsByThisTeam = tm.registeredEvents;
     if (registeredEventsByThisTeam.length > 0) {
-      return res.status(400).json({
+      return res.status(409).json({
         ok: false,
         msg: "This team is already registered for some event/events",
       });
@@ -168,13 +168,13 @@ const sendTeamInvite = async (req, res, next) => {
   if (!sendToEmail) {
     return res.status(400).json({
       ok: false,
-      msg: "sendToEmail missing",
+      msg: "Recipient email address is missing",
     });
   }
   if (!leaderId) {
     return res.status(400).json({
       ok: false,
-      msg: "leaderId missing",
+      msg: "Leader ID is missing",
     });
   }
 
@@ -182,7 +182,7 @@ const sendTeamInvite = async (req, res, next) => {
     const tm = await Team.findOne({ teamName, leader: leaderId });
 
     if (!tm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "Invalid team name or invalid leaderID",
       });
@@ -191,7 +191,7 @@ const sendTeamInvite = async (req, res, next) => {
     const targetUser = await User.findOne({ email: sendToEmail });
 
     if (!targetUser) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "targetUser is not registered.",
       });
@@ -205,7 +205,7 @@ const sendTeamInvite = async (req, res, next) => {
     for (let i = 0; i < acceptedMembersArray.length; i++) {
       const currUserId = JSON.stringify(acceptedMembersArray[i]);
       if (targetUserId === currUserId) {
-        return res.status(400).json({
+        return res.status(409).json({
           ok: false,
           msg: "User is already in the team and accepted by leader",
         });
@@ -216,7 +216,7 @@ const sendTeamInvite = async (req, res, next) => {
       const currUserId = JSON.stringify(pendingMembersArray[i]);
 
       if (currUserId === targetUserId) {
-        return res.status(400).json({
+        return res.status(409).json({
           ok: false,
           msg: "Team Invitation Already sent.",
         });
@@ -227,7 +227,7 @@ const sendTeamInvite = async (req, res, next) => {
     var currentTeamSize = tm.acceptedMembers.length + tm.pendingMembers.length;
 
     if (currentTeamSize >= maxTeamSize) {
-      return res.status(400).json({
+      return res.status(409).json({
         ok: false,
         msg: "Team size is currently full",
       });
@@ -267,7 +267,7 @@ const getAllTeamInvitesForAUser = async (req, res, next) => {
       .exec();
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "User Not found with provided userID",
       });
@@ -300,6 +300,13 @@ const getMembersOfATeam = async (req, res, next) => {
       path: "acceptedMembers",
       model: User,
     });
+
+    if (!acMembers) {
+      return res.status(404).json({ // Added 404 Not Found for invalid teamId
+        ok: false,
+        msg: "Team not found",
+      });
+    }
 
     const pdMembers = await Team.findById({ _id: teamId }).populate({
       path: "pendingMembers",
@@ -344,14 +351,14 @@ const acceptInvite = async (req, res, next) => {
     const user = await User.findById({ _id: userId });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "User does not exist",
       });
     }
 
     if (!user.isFeePaid) {
-      return res.status(400).json({
+      return res.status(403).json({
         ok: false,
         msg: "First Pay the fee to accept invite",
       });
@@ -360,7 +367,7 @@ const acceptInvite = async (req, res, next) => {
     const tm = await Team.findById({ _id: teamId });
 
     if (!tm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "team not found",
       });
@@ -438,7 +445,7 @@ const rejectInvite = async (req, res, next) => {
     const user = await User.findById({ _id: userId });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "User does not exist",
       });
@@ -447,7 +454,7 @@ const rejectInvite = async (req, res, next) => {
     const tm = await Team.findById({ _id: teamId });
 
     if (!tm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "team not found",
       });
@@ -506,7 +513,7 @@ const userProfile = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "User does not exist",
       });
@@ -543,7 +550,7 @@ const updateResume = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "user does not exist",
       });
@@ -583,7 +590,7 @@ const leaveTeam = async (req, res, next) => {
     const user = await User.findById({ _id: userId });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "Not authorized to leave this team",
       });
@@ -592,7 +599,7 @@ const leaveTeam = async (req, res, next) => {
     const tm = await Team.findById({ _id: teamId });
 
     if (!tm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "Team does not exist",
       });
@@ -631,6 +638,11 @@ const leaveTeam = async (req, res, next) => {
 
     await tm.save();
     await user.save();
+
+    res.status(200).json({
+      ok: true,
+      msg: "Successfully left the team",
+    })
   } catch (err) {
     next(err);
   }
@@ -663,7 +675,7 @@ const kickMember = async (req, res, next) => {
   try {
     const ld = await User.findById({ _id: leaderId });
     if (!ld) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "leader id is invalid or does not exist in db",
       });
@@ -671,7 +683,7 @@ const kickMember = async (req, res, next) => {
 
     const tm = await Team.findById({ _id: teamId });
     if (!tm) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: true,
         msg: "team does not exist with teamId",
       });
@@ -679,7 +691,7 @@ const kickMember = async (req, res, next) => {
 
     const userToBeKicked = await User.findById({ _id: userTobeKickedId });
     if (!userToBeKicked) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "target user does not exist",
       });
@@ -700,7 +712,7 @@ const kickMember = async (req, res, next) => {
     const teamLeaderId = tm.leader;
 
     if (currentUserId != teamLeaderId) {
-      return res.status(400).json({
+      return res.status(403).json({
         ok: false,
         msg: "You are not authorized to kick this user",
       });
@@ -727,6 +739,10 @@ const kickMember = async (req, res, next) => {
 
     await tm.save();
     await userToBeKicked.save();
+    res.status(200).json({
+      ok: true,
+      msg: "User kicked out successfully",
+    })
   } catch (err) {
     next(err);
   }
@@ -749,7 +765,7 @@ const getParticipatingTeamsOfAUser = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(404).json({
         ok: false,
         msg: "User does Not exist Or No Team",
       });

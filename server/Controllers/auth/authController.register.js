@@ -20,11 +20,32 @@ const Register = AsyncErrorHandler(async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password are required" });
   }
-  // ............................. checks start ...........................
-  if (isOtherCollege) {
-    const { phone } = req.body;
-    if (!checkOtherCollegeEmail(email) || !checkPhone(phone)) {
-      return res.status(400).json({ message: "Invalid email or phone" });
+
+  try {
+    // ............................. checks start ...........................
+    if (isOtherCollege) {
+      // check phone and college for other college.
+      if (!req.body.phone) {
+        return res.status(400).json({
+          ok: false,
+          msg: "Phone No is Missing",
+        });
+      }
+
+      if (!req.body.college) {
+        return res.status(400).json({
+          ok: false,
+          msg: "College Name is Missing",
+        });
+      }
+      const { phone } = req.body;
+      if (!checkOtherCollegeEmail(email) || !checkPhone(phone)) {
+        return res.status(400).json({ message: "Invalid email or phone" });
+      }
+    } else {
+      if (!checkEmail(email)) {
+        return res.status(400).json({ message: "Invalid email" });
+      }
     }
   } else {
     if (!checkEmail(email)) {
@@ -77,6 +98,7 @@ const Register = AsyncErrorHandler(async (req, res) => {
     userName: email.split("@")[0],
     college: isOtherCollege ? req.body.college : "MNNIT",
   };
+
 
   if (isOtherCollege) {
     const { phone } = req.body;
