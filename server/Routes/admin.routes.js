@@ -9,24 +9,26 @@ import {
     downloadAcceptedTeamMembersEventId,
     makedepartmentcoordinator,getalldepartmentcoordinators,getdepartmentcoordinatorsByDep,deletedepartmentcoordinators,verifypayment
 } from "../Controllers/admin.controller.js";
+import {AuthenticateToken,isAdmin,isDepartmentCoordinator,isFestivalSecretary} from '../Middlewares/auth.middleware.js'
 
 const router = express.Router();
-router.get("/getallFeePaid", getallFeePaid);
-router.get("/getallFeeNotPaid", getallFeeNotPaid);
-router.use("/getallTeamEvents/:eventId", getallTeamEvents);
+router.get("/getallFeePaid",isAdmin,getallFeePaid);
+router.get("/getallFeeNotPaid",isAdmin,getallFeeNotPaid);
+router.use("/getallTeamEvents/:eventId",isAdmin,getallTeamEvents);
 router.use(
     "/downloadAllEventTeamMembers/:eventId",
+    isAdmin,
     downloadAllEventTeamMembersEventId
 );
-router.use("/downloadAllEventTeamMembers", downloadAllEventTeamMembers);
+router.use("/downloadAllEventTeamMembers",isFestivalSecretary,downloadAllEventTeamMembers);
 router.use(
-    "/downloadAcceptedTeamMembers/:eventId",
+    "/downloadAcceptedTeamMembers/:eventId",isAdmin,
     downloadAcceptedTeamMembersEventId
 );
 router.use("/downloadAcceptedTeamMembers", downloadAcceptedTeamMembers);
 router.post('/makedc',makedepartmentcoordinator);
 router.get('/getalldcs',getalldepartmentcoordinators);
-router.post('/getdcsBydep',getdepartmentcoordinatorsByDep);
+router.get('/getdcsBydep',getdepartmentcoordinatorsByDep);
 router.post('/deletedcs',deletedepartmentcoordinators);
 router.post('/verifypayment',verifypayment);
 
