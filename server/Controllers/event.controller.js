@@ -1,4 +1,4 @@
-import User from "../Models/user.model";
+import User from "../Models/user.model.js";
 import Team from "../Models/team.model.js";
 import Event from "../Models/event.model.js";
 

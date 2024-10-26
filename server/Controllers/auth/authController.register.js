@@ -47,13 +47,12 @@ const Register = AsyncErrorHandler(async (req, res) => {
         return res.status(400).json({ message: "Invalid email" });
       }
     }
-  } else {
-    if (!checkEmail(email)) {
-      return res.status(400).json({ message: "Invalid email" });
-    }
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
   }
+
   if (!checkPassword(password) || !checkName(name)) {
-    return res.status(400).json({ message: "Invalid password or name" });
+    return res.status(400).json({ message: "Invalid Username or Password" });
   }
 
   // Check if the user already exists
