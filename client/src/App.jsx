@@ -21,7 +21,7 @@ import CulravEvent from "./pages/Culrav/EventPage";
 import CulravLanding from "./pages/Culrav/LandingPage";
 import Home from "./pages/Home/HomePage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
-// import UserProfilePage from "./pages/UserDashboard/UserProfilePage";
+import UserProfilePage from "./pages/UserDashboard/UserProfilePage";
 import Team from "./pages/Team/TeamPage";
 
 const TitleUpdater = () => {
@@ -68,6 +68,9 @@ const TitleUpdater = () => {
       case "/team":
         title += " Team";
         break;
+        case "/profile":
+        title += " Profile";
+        break;
       default:
         title += "";
     }
@@ -99,8 +102,7 @@ function App() {
         <Route path="/AvishkarEvents" element={<AvishkarEvents />} />
         <Route path="/AvishkarEventPage" element={<AvishkarEvent />} />
         <Route path="/team" element={<Team />} />
-        {/* just to check i added  */}
-        {/* <Route path="/UserDashboard" element={<UserProfilePage />} />   */}
+        <Route path="/profile" element={<UserProfilePage />} />
       </Routes>
       <Footer />
     </Router>

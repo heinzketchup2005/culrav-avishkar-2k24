@@ -3,12 +3,13 @@ import Profile from "../../Components/UserDashBoard/Profile";
 import UploadResume from "../../Components/UserDashBoard/UploadResume";
 import CreateTeam from "../../Components/UserDashBoard/CreateTeam";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
-
+import { useNavigate } from "react-router-dom";
 const Popup = () => {
     const [isOpen, setIsOpen] = useState(false); 
     const [activeItem, setActiveItem] = useState("Profile");
     const popupRef = useRef(null);
-
+    const navigate=useNavigate();
+    
     const toggle = () => {
         setIsOpen(!isOpen); 
     };
@@ -67,7 +68,12 @@ const Popup = () => {
                         <li className={`hover:text-customOrange cursor-pointer ${activeItem === "View Invitation" ? "text-customOrange" : ""}`} onClick={() => handleNavigation("View Invitation")}>View Invitation</li>
                     </ul>
 
-                    <button className="w-[160px] h-[40px] bg-register border-0 rounded-sm text-white">Logout</button>
+                    <button
+                     onClick={() => {
+                        // console.log("here");
+                        localStorage.removeItem("token");
+                        navigate("/login");
+                      }} className="w-[160px] h-[40px] bg-register border-0 rounded-sm text-white">Logout</button>
 
                     <div className="absolute bottom-0 right-0 w-full flex justify-center">
                         <button onClick={toggle} className="text-white rounded-full p-2">

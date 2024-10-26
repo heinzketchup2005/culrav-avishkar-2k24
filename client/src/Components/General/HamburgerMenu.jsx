@@ -41,7 +41,7 @@ const HamburgerMenu = () => {
               <a href="#">GALLERY</a>
             </li>
             <li className="py-2 px-4 hover:text-register transition-all duration-300 ease-in-out">
-              <a href="#">TEAM</a>
+              <a href="/team">TEAM</a>
             </li>
             <li className="py-2 px-4 hover:text-register transition-all duration-300 ease-in-out">
               <a href="#">SPONSORS</a>
@@ -56,11 +56,10 @@ const HamburgerMenu = () => {
                 isOpen ? "block" : "hidden"
               }`}
               onClick={() => {
-                localStorage.removeItem("token");
-                navigate("/login");
+                navigate("/profile");
               }}
             >
-              <h1 className="text-[2.2rem]">LOG OUT</h1>
+              <h1 className="text-[2.2rem]">PROFILE</h1>
             </button>
           ) : (
             <button

@@ -15,30 +15,23 @@ import SendEmail from "../../Utils/auth/sendEmail.js";
 
 // Register a new users
 const Register = AsyncErrorHandler(async (req, res) => {
-  const { name, email, password, isOtherCollege } = req.body;
-  // Check if email and password are provided
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+  const { name, email, password, phone, isOtherCollege } = req.body;
+
+  // Check if email, password, and phone are provided
+  if (!email || !password || !phone) {
+    return res.status(400).json({ message: "Email, password, and phone are required" });
   }
 
   try {
     // ............................. checks start ...........................
     if (isOtherCollege) {
-      // check phone and college for other college.
-      if (!req.body.phone) {
-        return res.status(400).json({
-          ok: false,
-          msg: "Phone No is Missing",
-        });
-      }
-
+      // check college for other college.
       if (!req.body.college) {
         return res.status(400).json({
           ok: false,
           msg: "College Name is Missing",
         });
       }
-      const { phone } = req.body;
       if (!checkOtherCollegeEmail(email) || !checkPhone(phone)) {
         return res.status(400).json({ message: "Invalid email or phone" });
       }
@@ -61,29 +54,10 @@ const Register = AsyncErrorHandler(async (req, res) => {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  // check phone and college for other college.
-  if (isOtherCollege && !req.body.phone) {
-    return res.status(400).json({
-      ok: false,
-      message: "Phone No is Missing",
-    });
-  }
-
-  if (isOtherCollege && !req.body.college) {
-    return res.status(400).json({
-      ok: false,
-      message: "College Name is Missing",
-    });
-  }
-
-  if (isOtherCollege) {
-    const oldUser = await User.findOne({ phone: req.body.phone });
-    if (oldUser) {
-      return res.status(400).json({
-        ok: false,
-        message: "User with same phone No already exist",
-      });
-    }
+  // Check if the phone number already exists
+  const existingPhoneUser = await User.findOne({ phone });
+  if (existingPhoneUser) {
+    return res.status(400).json({ message: "User with same phone number already exists" });
   }
 
   // ........................... checks end...............................
@@ -96,13 +70,9 @@ const Register = AsyncErrorHandler(async (req, res) => {
     password: hashedPassword,
     userName: email.split("@")[0],
     college: isOtherCollege ? req.body.college : "MNNIT",
+    phone: `+91${phone}`, // Append +91 to the phone number
   };
 
-
-  if (isOtherCollege) {
-    const { phone } = req.body;
-    user = { ...user, phone };
-  }
   const newUser = new User(user);
 
   // Save the user to the database
@@ -120,4 +90,5 @@ const Register = AsyncErrorHandler(async (req, res) => {
   SendEmail(email, subject, text);
   res.status(201).json({ message: "User registered successfully" });
 });
+
 export default Register;

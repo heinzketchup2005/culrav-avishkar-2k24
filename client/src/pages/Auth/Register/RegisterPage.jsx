@@ -1,4 +1,3 @@
-// import sendVerificationEmail from "@/lib/emailverification.js";
 import { Button } from "@/ShadCnComponents/ui/button.jsx";
 import Input from "@/ShadCnComponents/ui/Input";
 import axios from "axios";
@@ -8,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../utils/useAuth";
+
 const apiClient = axios.create({
   baseURL: "http://localhost:3000", // Base URL for all requests
 });
@@ -35,6 +35,7 @@ function Register() {
   // console.log("welcome to registeration ");
   useEffect(() => {}, [submiting]);
   const create = async (data) => {
+
     try {
       console.log(data);
       setsubmiting(true);
@@ -43,6 +44,7 @@ function Register() {
         email: data.email,
         password: data.password,
         isOtherCollege: false,
+        phone: `${data.phone}`, // Append +91 to the phone number
       });
 
       // Check for a successful response (status code 200)
@@ -52,6 +54,7 @@ function Register() {
         console.log("User now went to verify user");
       }
     } catch (err) {
+      setsubmiting(false);
       // Safely handle different types of errors
       if (err.response) {
         // Server responded with a status outside the 2xx range (e.g., 400, 500)
@@ -112,6 +115,21 @@ function Register() {
 
           {errors.email && (
             <p className="text-[#F54E25]">{errors.email.message}</p>
+          )}
+
+          <Input
+            placeholder="Phone Number"
+            {...register("phone", {
+              required: "Phone number is required",
+              validate: {
+                matchPattern: (value) =>
+                  /^[6-9]\d{9}$/.test(value) ||
+                  "Phone number must be a valid Indian phone number",
+              },
+            })}
+          />
+          {errors.phone && (
+            <p className="text-[#F54E25]">{errors.phone.message}</p>
           )}
 
           <div className="relative">
