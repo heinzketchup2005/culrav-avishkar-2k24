@@ -6,7 +6,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../utils/useAuth";
+import useAuth from "../../../lib/useAuth";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:3000", // Base URL for all requests

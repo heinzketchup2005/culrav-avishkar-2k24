@@ -1,16 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Hamburger from "hamburger-react";
-// import useAuth from "@/pages/Auth/utils/useAuth";
-import useAuth from "../../pages/Auth/utils/useAuth";
+import { useDispatch } from "react-redux";
+import { signoutSuccess } from "@/redux/auth/authSlice";
+import useAuth from "../../lib/useAuth";
 
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const auth = useAuth();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(signoutSuccess());
+    navigate("/login");
   };
 
   return (
@@ -51,16 +58,18 @@ const HamburgerMenu = () => {
             </li>
           </ul>
           {auth ? (
-            <button
-              className={`md:flex w-[9.8rem] h-[4rem] tracking-wider bg-register text-white items-center justify-center font-semibold font-bebas hover:text-register hover:bg-white transition-all duration-500 ${
-                isOpen ? "block" : "hidden"
-              }`}
-              onClick={() => {
-                navigate("/profile");
-              }}
-            >
-              <h1 className="text-[2.2rem]">PROFILE</h1>
-            </button>
+            <>
+              <button
+                className={`md:flex w-[9.8rem] h-[4rem] tracking-wider bg-register text-white items-center justify-center font-semibold font-bebas hover:text-register hover:bg-white transition-all duration-500 ${
+                  isOpen ? "block" : "hidden"
+                }`}
+                onClick={() => {
+                  navigate("/dashboard");
+                }}
+              >
+                <h1 className="text-[2.2rem]">PROFILE</h1>
+              </button>
+            </>
           ) : (
             <button
               className={`md:flex w-[9.8rem] h-[4rem] tracking-wider bg-register text-white items-center justify-center font-semibold font-bebas hover:text-register hover:bg-white transition-all duration-500 ${

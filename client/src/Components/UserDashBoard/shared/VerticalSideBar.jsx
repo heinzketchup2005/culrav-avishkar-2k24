@@ -3,19 +3,27 @@ import Profile from "../Profile/Profile"
 import UploadResume from "../UploadResume/UploadResume";
 import CreateTeam from "../CreateTeam/CreateTeam";
 import { useNavigate } from "react-router-dom";
-// loadinng icons
-import userround from "@/assets/userDashBoard/VerticalNavIcons/user-round.png"
-import Frame from "@/assets/userDashBoard/VerticalNavIcons/Frame.png"
-import History from "@/assets/userDashBoard/VerticalNavIcons/History.png"
+import userround from "../../../assets/userDashBoard/VerticalNavIcons/user-round.png";
 import userroundplus from "@/assets/userDashBoard/VerticalNavIcons/user-round-plus.png"
 import usersround from "@/assets/userDashBoard/VerticalNavIcons/users-round.png"
-import logout from "@/assets/userDashBoard/VerticalNavIcons/logout.png"
 import Team from "../Team/index"
 import Invitations from "../Invitation/index"
+import { useDispatch } from "react-redux";
+import { signoutSuccess } from "@/redux/auth/authSlice";
+import Frame from "../../../assets/userDashBoard/VerticalNavIcons/Frame.png";
+import History from "../../../assets/userDashBoard/VerticalNavIcons/History.png";
+import logout from "../../../assets/userDashBoard/VerticalNavIcons/logout.png";
 
 const VerticalSideBar = () => {
   const [activeItem, setActiveItem] = useState("Profile");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(signoutSuccess());
+    navigate("/login");
+  };
+
   const renderPageContent = () => {
     switch (activeItem) {
       case "Profile":
@@ -35,9 +43,9 @@ const VerticalSideBar = () => {
 
   return (
     <div className="flex">
-      <div className="hidden relative flex-col md:flex md:w-[26vw] custom1000:w-[20vw] custom1840:w-[17vw] w-[30vw] h-[100vh] bg-scheduleLargeText">
-        <div className="h-[15%]"></div>
-        <div className="h-full flex flex-col gap-4 text-mineShaft w-full p-5 font-Manrope text-[16px]">
+      <div className="hidden md:block md:w-[26vw] custom1000:w-[20vw] custom1840:w-[17vw] w-[20vw] h-[100vh] bg-scheduleLargeText">
+        <div className="h-[128px]"></div>
+        <div className="h-full relative flex flex-col gap-4 text-mineShaft w-full p-5 font-Manrope text-[16px]">
           <div
             className={`group w-full h-[49px] border-0 cursor-pointer rounded-[6px] flex items-center px-2 gap-3 transition-all duration-200 ${activeItem === "Profile" ? "bg-white text-zinc-700" : "hover:text-zinc-700 hover:bg-white"
               }`}
@@ -105,11 +113,8 @@ const VerticalSideBar = () => {
             </div>
           </div>
 
-          <div className="absolute bottom-16 cursor-pointer flex flex-col-reverse">
-            <div className="flex gap-3" onClick={() => {
-              localStorage.removeItem("token");
-              navigate("/login");
-            }}>
+          <div className="absolute bottom-[24vh] cursor-pointer flex flex-col-reverse">
+            <div className="flex gap-3" onClick={handleLogout}>
               <img src={logout} alt="" />
               <h1>Logout</h1>
             </div>
