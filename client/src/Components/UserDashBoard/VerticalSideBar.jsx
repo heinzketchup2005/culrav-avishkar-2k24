@@ -44,7 +44,7 @@ const VerticalSideBar = () => {
     <div className="flex">
       <div className="hidden md:block md:w-[26vw] custom1000:w-[20vw] custom1840:w-[17vw] w-[20vw] h-[100vh] bg-scheduleLargeText">
         <div className="h-[128px]"></div>
-        <div className="h-full flex flex-col gap-4 text-mineShaft w-full p-5 font-Manrope text-[16px]">
+        <div className="h-full relative flex flex-col gap-4 text-mineShaft w-full p-5 font-Manrope text-[16px]">
           <div
             className={`group w-full h-[49px] border-0 cursor-pointer rounded-[6px] flex items-center px-2 gap-3 transition-all duration-200 ${
               activeItem === "Profile" ? "bg-white text-zinc-700" : "hover:text-zinc-700 hover:bg-white"
@@ -117,7 +117,7 @@ const VerticalSideBar = () => {
             </div>
           </div>
 
-          <div className="h-[45vh] cursor-pointer flex flex-col-reverse">
+          <div className="absolute bottom-[24vh] cursor-pointer flex flex-col-reverse">
             <div className="flex gap-3" onClick={handleLogout}>
               <img src={logout} alt="" />
               <h1>Logout</h1>

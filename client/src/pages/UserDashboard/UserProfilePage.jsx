@@ -3,7 +3,7 @@ import VerticalSideBar from "../../Components/UserDashBoard/VerticalSideBar"
 
 const UserProfilePage = () => {
   return (
-    <div className="">
+    <div className="overflow-hidden">
         <Popup/>
         <VerticalSideBar/>      
     </div>
