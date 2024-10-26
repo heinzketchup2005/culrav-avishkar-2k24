@@ -69,14 +69,6 @@ const HamburgerMenu = () => {
               >
                 <h1 className="text-[2.2rem]">PROFILE</h1>
               </button>
-              <button
-                className={`md:flex w-[9.8rem] h-[4rem] tracking-wider bg-register text-white items-center justify-center font-semibold font-bebas hover:text-register hover:bg-white transition-all duration-500 ${
-                  isOpen ? "block" : "hidden"
-                }`}
-                onClick={handleLogout}
-              >
-                <h1 className="text-[2.2rem]">LOGOUT</h1>
-              </button>
             </>
           ) : (
             <button

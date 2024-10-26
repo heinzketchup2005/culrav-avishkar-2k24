@@ -21,9 +21,9 @@ import CulravEvent from "./pages/Culrav/EventPage";
 import CulravLanding from "./pages/Culrav/LandingPage";
 import Home from "./pages/Home/HomePage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
-import UserProfilePage from "./pages/UserDashboard/UserProfilePage";
 import Team from "./pages/Team/TeamPage";
 import PrivateRoute from "./Components/General/PrivateRoute";
+import UserProfilePage from "./pages/UserDashboard/UserDashboardPage";
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -70,6 +70,7 @@ const TitleUpdater = () => {
         title += " Team";
         break;
       case "/profile":
+      case "/profile":
         title += " Profile";
         break;
       default:
@@ -92,8 +93,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Register />} />
         <Route path='/forget-password' element={<ForgetPassword />} />
-        <Route path="/forget-password-token-verification" element={<ForgetPasswordTokenVerification/>}/>
-        <Route path="/verify-email" element={<VerifyEmail/>}/>
+        <Route path="/forget-password-token-verification" element={<ForgetPasswordTokenVerification />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/outside-registration" element={<OutsideRegistration />} />
         <Route path="/outside-registration/payFee" element={<PayFeesPage />} />
         <Route path="/Culrav-Landing" element={<CulravLanding />} />
@@ -107,7 +108,7 @@ function App() {
           <Route path="/dashboard" element={<UserProfilePage />} />
         </Route>
       </Routes>
-      <Footer />
+       <Footer />
     </Router>
   );
 }

@@ -1,5 +1,5 @@
-import Popup from "../../Components/UserDashBoard/Popup"
-import VerticalSideBar from "../../Components/UserDashBoard/VerticalSideBar"
+import Popup from "../../Components/UserDashboard/shared/Popup"
+import VerticalSideBar from "../../Components/UserDashboard/shared/VerticalSideBar"
 
 const UserProfilePage = () => {
   return (

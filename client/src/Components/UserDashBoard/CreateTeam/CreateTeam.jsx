@@ -1,6 +1,6 @@
 import { useState } from "react";
-import TeamOptions from "./TeamOptions";
-import ContentBox from "../../assets/userDashBoard/ContentBox.png";
+import TeamOptions from "../shared/TeamOptions";
+import ContentBox from "../../../assets/userDashBoard/ContentBox.png";
 
 const CreateTeam = () => {
   const [teamName, setTeamName] = useState("");
@@ -23,7 +23,7 @@ const CreateTeam = () => {
       backgroundRepeat: 'no-repeat', 
     }} 
     >
-      <div className="px-9 py-7 bg-scheduleLargeText w-[90%] max-w-[640px]">
+      <div className="rounded-md px-9 py-7 bg-scheduleLargeText w-[90%] max-w-[640px]">
         <div className="w-full h-[90px] md:h-[120px] flex justify-center">
           <h1 className="font-bionix text-[30px] md:text-5xl text-white">Create Team</h1>
         </div>

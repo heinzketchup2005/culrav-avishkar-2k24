@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import Profile from "../../Components/UserDashBoard/Profile";
-import UploadResume from "../../Components/UserDashBoard/UploadResume";
-import CreateTeam from "../../Components/UserDashBoard/CreateTeam";
+import Profile from "../Profile/Profile";
+import UploadResume from "../UploadResume/UploadResume";
+import CreateTeam from "../CreateTeam/CreateTeam";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signoutSuccess } from "@/redux/auth/authSlice";
+import Team from "../Team/index"
+import Invitations from "../Invitation";
 
 const Popup = () => {
     const [isOpen, setIsOpen] = useState(false); 
@@ -52,19 +54,19 @@ const Popup = () => {
             case "Upload Resume":
                 return <UploadResume />;
             case "My Teams":
-                return <div>My Teams Page Content</div>;
+                return <Team />
             case "Create Team":
                 return <CreateTeam />;
             case "View Invitation":
-                return <div>Invitation Page Content</div>;
+                return <Invitations />;
             default:
                 return null;
         }
     };
 
     return (
-        <div className="relative md:hidden">
-            <div ref={popupRef} className="relative">
+        <div className="relative md:hidden ">
+            <div ref={popupRef} className="relative ">
                 <div
                     className={`md:hidden w-[100vw] fixed transition-all flex flex-col gap-8 justify-center items-center font-Sfpro text-[18px] duration-1000 h-[460px] bg-scheduleLargeText border-0 top-[0] z-[20] rounded-b-[46px] ${isOpen ? "transform translate-y-[90px]" : "transform translate-y-[-330px]"}`}
                 >
@@ -92,7 +94,7 @@ const Popup = () => {
             </div>
 
             {activeItem && (
-                <div className="absolute w-[100vw] h-[100vh] bg-white flex justify-center items-center z-[10]">
+                <div className="absolute w-full bg-white flex justify-center items-center z-[10]">
                     {renderPageContent()}
                 </div>
             )}
