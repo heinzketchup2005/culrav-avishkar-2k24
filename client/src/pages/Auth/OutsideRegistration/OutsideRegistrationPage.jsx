@@ -1,111 +1,191 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import QR from './QR'; 
-import { setUserDetails, setToken } from '../../../store/userActions'; 
+// import sendVerificationEmail from "@/lib/emailverification.js";
+import { Button } from "@/ShadCnComponents/ui/button.jsx";
+import Input from "@/ShadCnComponents/ui/Input";
+import axios from "axios";
 
-const OutsideRegistration = () => {
-  const dispatch = useDispatch();
-  const userDetails = useSelector((state) => state.user.details);
-  const [showQR, setShowQR] = useState(false);
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, matchPath, useNavigate } from "react-router-dom";
+import useAuth from "../utils/useAuth";
+const apiClient = axios.create({
+  baseURL: "http://localhost:3000", // Base URL for all requests
+});
 
-  const handleChange = (e) => {
-      const { name, value } = e.target;
-      dispatch(setUserDetails({ ...userDetails, [name]: value }));
-      console.log('Redux State (onChange):', { ...userDetails, [name]: value });
+function OutsideRegistration() {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
+  const [error, setError] = useState("");
+  const [submiting, setsubmiting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  // checking if the user is already logged in
+  const isAuthenticated = useAuth();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {}, [submiting]);
+
+  const create = async (data) => {
+    setsubmiting(true);
+
+    navigate("/outside-registration/payFee", { state: data });
+    setsubmiting(false);
   };
 
-  const handleSubmit = (e) => {
-      e.preventDefault();
-      console.log('Redux State (onSubmit):', userDetails);
-
-      const allFieldsFilled = Object.values(userDetails).every((field) => field.trim() !== '');
-      if (allFieldsFilled) {
-          const token = 'sample-token-from-server';
-          dispatch(setToken(token));
-          setShowQR(true);
-      } else {
-          alert('Please fill in all fields before submitting.');
-      }
-  };
+  // Password confirmation validation
+  const validatePasswordMatch = (value) =>
+    value === watch("password") || "Passwords do not match";
 
   return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-950 p-5">
-          <div
-              className="p-10 md:p-16 rounded-lg shadow-xl space-y-5 w-full max-w-md lg:max-w-lg"
-              style={{ backgroundColor: '#2D2D2D' }}
+    <div className="flex items-center justify-center bg-[#FFF2D5] min-h-screen w-full">
+      <div className="flex flex-col items-center justify-center w-full max-w-md p-6 bg-[#2D2D2D]  mx-4 sm:mx-0">
+        <h1 className="text-center text-2xl sm:text-3xl text-[#FFFAF0] font-bold font-bionix leading-tight">
+          Outside Participation for <br /> CULRAV-AVISHKAR
+        </h1>
+        <p className="text-center font-sftext m-2 p-1 text-[#FFFAF0]">
+          Already got registered?
+          <Link
+            to={"/login"}
+            className="font-medium font-sftext text-[#F54E25]  hover:underline ml-1"
           >
-              <h1 className="text-3xl font-extrabold text-white text-center">
-                  Outside Participation for <br /> CULRAV-AVISHKAR
-              </h1>
+            Log in
+          </Link>
+        </p>
+        <form
+          onSubmit={handleSubmit(create)}
+          className="space-y-5  font-sftext w-full"
+        >
+          <Input
+            placeholder="Full name"
+            {...register("name", { required: "Full name is required" })}
+          />
+          {errors.name && (
+            <p className="text-[#F54E25]">{errors.name.message}</p>
+          )}
 
-              <p className="text-white text-center">
-                  Already got registered?{' '}
-                  <a href="/login" className="text-[#F54E25] underline">
-                      Log in
-                  </a>
-              </p>
+          <Input
+            placeholder="Email Id"
+            type="email"
+            {...register("email", {
+              required: "Email is required",
+              validate: {
+                matchPattern: (value) => {
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                    "email is not valid";
+                },
+              },
+            })}
+          />
 
-              {!showQR ? (
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                      <input
-                          type="text"
-                          name="fullName"
-                          placeholder="Full Name"
-                          value={userDetails.fullName}
-                          onChange={handleChange}
-                          className="w-full p-3 text-white rounded"
-                          style={{ backgroundColor: '#3D3D3D' }}
-                      />
-                      <input
-                          type="email"
-                          name="email"
-                          placeholder="Email ID"
-                          value={userDetails.email}
-                          onChange={handleChange}
-                          className="w-full p-3 text-white rounded"
-                          style={{ backgroundColor: '#3D3D3D' }}
-                      />
-                      <input
-                          type="tel"
-                          name="phone"
-                          placeholder="Enter your phone no"
-                          value={userDetails.phone}
-                          onChange={handleChange}
-                          className="w-full p-3 text-white rounded"
-                          style={{ backgroundColor: '#3D3D3D' }}
-                      />
-                      <input
-                          type="text"
-                          name="collegeName"
-                          placeholder="Enter College Name"
-                          value={userDetails.collegeName}
-                          onChange={handleChange}
-                          className="w-full p-3 text-white rounded"
-                          style={{ backgroundColor: '#3D3D3D' }}
-                      />
-                      <input
-                          type="url"
-                          name="idCardUrl"
-                          placeholder="Enter College ID Card Img URL"
-                          value={userDetails.idCardUrl}
-                          onChange={handleChange}
-                          className="w-full p-3 text-white rounded"
-                          style={{ backgroundColor: '#3D3D3D' }}
-                      />
-                      <button
-                          type="submit"
-                          className="w-full p-4 text-white rounded transition"
-                          style={{ backgroundColor: '#F54E25' }}
-                      >
-                          Register
-                      </button>
-                  </form>
+          {errors.email && (
+            <p className="text-[#F54E25]">{errors.email.message}</p>
+          )}
+
+          <Input
+            placeholder="Phone no"
+            {...register("phone", {
+              required: "Phone no is required",
+              validate: {
+                matchPattern: (value) => {
+                  /^[0-9]{10}$/.test(value) || "Phone must be a valid phone no";
+                },
+              },
+            })}
+          />
+          <Input
+            placeholder="College Name"
+            {...register("college", {
+              required: "college name is required",
+            })}
+          />
+
+          <Input
+            placeholder="College ID card (image url)"
+            type="url"
+            {...register("collegeID", {
+              required: "college ID is required",
+            })}
+          />
+
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              {...register("password", {
+                required: "Password is required",
+                validate: {
+                  matchPattern: (value) =>
+                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(value) ||
+                    "Password is not valid",
+                },
+              })}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-2.5"
+            >
+              {showPassword ? (
+                <EyeOff className="animate-pulse text-gray-500" />
               ) : (
-                  <QR />
+                <Eye className="animate-pulse text-gray-500" />
               )}
+            </button>
           </div>
+          {errors.password && (
+            <p className="text-[#F54E25]">{errors.password.message}</p>
+          )}
+
+          <div className="relative">
+            <Input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              {...register("confirmPassword", {
+                required: "Please confirm your password",
+                validate: validatePasswordMatch,
+              })}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-2 top-2.5"
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="animate-pulse text-gray-500" />
+              ) : (
+                <Eye className="animate-pulse text-gray-500" />
+              )}
+            </button>
+          </div>
+          {errors.confirmPassword && (
+            <p className="text-[#F54E25]">{errors.confirmPassword.message}</p>
+          )}
+
+          {submiting ? (
+            <Loader2 className="animate-spin justify-center items-center" />
+          ) : (
+            <Button
+              type="submit"
+              className="w-full font-sftext bg-orange-600 hover:bg-orange-500 text-[#FFFAF0] py-3  font-semibold"
+            >
+              Pay Fee
+            </Button>
+          )}
+        </form>
+
+        {error && <p className="text-[#F54E25]">{error}</p>}
       </div>
+    </div>
   );
-};
+}
 
 export default OutsideRegistration;

@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Button } from "@/ShadCnComponents/ui/button"
-import ScrollableDiv from "@/Components/UserDashboard/ScrollableDiv"
+import ScrollableDiv from "@/Components/UserDashboard/shared/ScrollableDiv"
 import { useNavigate } from "react-router-dom"
-import Alert from '../Alert'
+import Alert from '../shared/Alert'
 
-function UserTeams({ teamData }) {
+function UserTeams({ teamData, showTeamInfo }) {
 
     const [openDeleteTeamModal, setOpenDeleteTeamModal] = useState(false);
 
@@ -15,10 +15,11 @@ function UserTeams({ teamData }) {
     }
 
     function handleSelectTeam(team) {
-        navigate(`/dashboard/teams/${team.teamId}`)
+        console.log(team)
+        showTeamInfo(team);
     }
 
-    function openDeleteModal(e){
+    function openDeleteModal(e) {
         e.stopPropagation();
         e.preventDefault();
         setOpenDeleteTeamModal(true);
@@ -29,12 +30,13 @@ function UserTeams({ teamData }) {
     const joinedTeams = teamData.filter(team => !team.leader.email !== userEmail)
 
     return (
-        <div className="bg-dark_secondary w-full h-full p-5 flex flex-col md:flex-row  gap-5 ">
+        <div className="md:w-[50vw]  lg:w-full  h-full flex flex-col lg:flex-row gap-10 lg:gap-5 ">
+
             {createdTeams.length > 0 &&
                 <ScrollableDiv title="My teams">
                     {createdTeams.map((team) => {
                         return (
-                            <div onClick={()=>handleSelectTeam(team)} className="cursor-pointer mb-3 h-auto w-full px-5 py-4 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex
+                            <div onClick={() => handleSelectTeam(team)} className="cursor-pointer mb-3 h-auto w-full px-5 py-4 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex
             transition-all duration-300 ease-in-out transform hover:scale-95 hover:shadow-xl
                             ">
                                 <div className="text-Mine_Shaft_300 text-lg font-normal font-sfText leading-tight">{team.name}</div>
@@ -48,7 +50,7 @@ function UserTeams({ teamData }) {
                 <ScrollableDiv title="Joined teams">
                     {joinedTeams.map((team) => {
                         return (
-                            <div onClick={()=>{handleSelectTeam(team)}} className="cursor-pointer mb-3 h-auto w-full px-5 py-6 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex 
+                            <div onClick={() => { handleSelectTeam(team) }} className="cursor-pointer mb-3 h-auto w-full px-5 py-6 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex 
             transition-all duration-300 ease-in-out transform hover:scale-95 hover:shadow-xl">
                                 <div className="text-Mine_Shaft_300 text-lg font-normal font-sfText leading-tight">{team.name}</div>
                             </div>

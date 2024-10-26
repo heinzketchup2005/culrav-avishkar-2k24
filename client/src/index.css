@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@200..800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +7,12 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+@media (min-width: 768px) { 
+  .md:h-calc {
+    height: calc(100vh - 92px);
+  }
 }
 
 @font-face {
@@ -22,6 +29,20 @@ html {
   font-style: normal;
 }
 
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('./assets/fonts/Bionix.otf') format('opentype');
+  font-weight: normal; 
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sfpro';
+  src: url('./assets/fonts/Sfpro.otf') format('opentype');
+  font-weight: bold; 
+  font-style: normal;
+}
 
 @font-face {
   font-family: 'sftext';
@@ -54,7 +75,7 @@ html {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -80,7 +101,7 @@ html {
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -93,8 +114,19 @@ html {
   }
 }
 
+
+
 .custom-scrollbar::-webkit-scrollbar {
   border: 2px solid #616161; /* Add your desired border style here */
   border-radius: 10px;
 
+}
+/* Adding scroll-bar hidden in userDashboard Number of team member select-options */
+.scrollbar-hidden {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; 
 }

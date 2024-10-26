@@ -22,9 +22,7 @@ import CulravLanding from "./pages/Culrav/LandingPage";
 import Home from "./pages/Home/HomePage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
 import Team from "./pages/Team/TeamPage";
-import UserTeams from "./pages/UserDashboard/Teams";
-import TeamInfo from "./Components/UserDashboard/Team/TeamInfo";
-import Invitations from "./pages/UserDashboard/Invitation";
+import UserDashboardPage from "./pages/UserDashboard/UserDashboardPage"
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -70,6 +68,9 @@ const TitleUpdater = () => {
       case "/team":
         title += " Team";
         break;
+      case "/profile":
+        title += " Profile";
+        break;
       default:
         title += "";
     }
@@ -83,7 +84,7 @@ const TitleUpdater = () => {
 function App() {
   return (
     <Router>
-      {/* <Navbar /> */}
+      <Navbar />
       <TitleUpdater />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -101,11 +102,9 @@ function App() {
         <Route path="/AvishkarEvents" element={<AvishkarEvents />} />
         <Route path="/AvishkarEventPage" element={<AvishkarEvent />} />
         <Route path="/team" element={<Team />} />
-        <Route path="/dashboard/teams" element={<UserTeams />} />
-        <Route path="/dashboard/teams/:teamId" element={<TeamInfo />} />
-        <Route path="/dashboard/invitations" element={<Invitations />} />
+        <Route path="/dashboard" element={<UserDashboardPage />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 }
