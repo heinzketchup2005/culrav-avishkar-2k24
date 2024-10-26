@@ -34,10 +34,16 @@ function Navbar() {
         >
           TEAM
         </h1>
-        <h1 className="hover:text-register tracking-widest transition-colors cursor-pointer duration-300">
+        <h1 className="hover:text-register tracking-widest transition-colors cursor-pointer duration-300" 
+        onClick={() => {
+            navigate("/sponsors");
+          }}>
           SPONSORS
         </h1>
-        <h1 className="hover:text-register tracking-widest transition-colors cursor-pointer duration-300">
+        <h1 className="hover:text-register tracking-widest transition-colors cursor-pointer duration-300" 
+        onClick={() => {
+            navigate("/schedule");
+          }}>
           SCHEDULE
         </h1>
       </div>

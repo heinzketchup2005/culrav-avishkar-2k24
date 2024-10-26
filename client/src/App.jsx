@@ -24,6 +24,8 @@ import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
 import Team from "./pages/Team/TeamPage";
 import PrivateRoute from "./Components/General/PrivateRoute";
 import UserProfilePage from "./pages/UserDashboard/UserDashboardPage";
+import Schedule from "./Components/Schedule/Schedule";
+import Sponsors from "./Components/Sponsors/Sponsors";
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -107,6 +109,8 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<UserProfilePage />} />
         </Route>
+        <Route path="/schedule" element={<Schedule />} />
+        <Route path="/sponsors" element={<Sponsors />} />
       </Routes>
        <Footer />
     </Router>

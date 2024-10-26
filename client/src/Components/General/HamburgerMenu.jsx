@@ -51,10 +51,10 @@ const HamburgerMenu = () => {
               <a href="/team">TEAM</a>
             </li>
             <li className="py-2 px-4 hover:text-register transition-all duration-300 ease-in-out">
-              <a href="#">SPONSORS</a>
+              <a href="/sponsors">SPONSORS</a>
             </li>
             <li className="py-2 px-4 hover:text-register transition-all duration-300 ease-in-out">
-              <a href="#">SCHEDULE</a>
+              <a href="/schedule">SCHEDULE</a>
             </li>
           </ul>
           {auth ? (
