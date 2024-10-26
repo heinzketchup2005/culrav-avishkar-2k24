@@ -22,9 +22,10 @@ html {
   font-style: normal;
 }
 
+
 @font-face {
   font-family: 'sftext';
-  src: url('./assets/fonts/sftext.otf') format('truetype');
+  src: url("./assets/fonts/sfText_regular.OTF") format('opentype');
 }
 
 @layer base {
@@ -90,4 +91,10 @@ html {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  border: 2px solid #616161; /* Add your desired border style here */
+  border-radius: 10px;
+
 }

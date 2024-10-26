@@ -22,6 +22,9 @@ import CulravLanding from "./pages/Culrav/LandingPage";
 import Home from "./pages/Home/HomePage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
 import Team from "./pages/Team/TeamPage";
+import UserTeams from "./pages/UserDashboard/Teams";
+import TeamInfo from "./Components/UserDashboard/Team/TeamInfo";
+import Invitations from "./pages/UserDashboard/Invitation";
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -80,15 +83,15 @@ const TitleUpdater = () => {
 function App() {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
       <TitleUpdater />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Register />} />
         <Route path='/forget-password' element={<ForgetPassword />} />
-        <Route path="/forget-password-token-verification" element={<ForgetPasswordTokenVerification/>}/>
-        <Route path="/verify-email" element={<VerifyEmail/>}/>
+        <Route path="/forget-password-token-verification" element={<ForgetPasswordTokenVerification />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/outside-registration" element={<OutsideRegistration />} />
         <Route path="/outside-registration/payFee" element={<PayFeesPage />} />
         <Route path="/Culrav-Landing" element={<CulravLanding />} />
@@ -98,6 +101,9 @@ function App() {
         <Route path="/AvishkarEvents" element={<AvishkarEvents />} />
         <Route path="/AvishkarEventPage" element={<AvishkarEvent />} />
         <Route path="/team" element={<Team />} />
+        <Route path="/dashboard/teams" element={<UserTeams />} />
+        <Route path="/dashboard/teams/:teamId" element={<TeamInfo />} />
+        <Route path="/dashboard/invitations" element={<Invitations />} />
       </Routes>
       <Footer />
     </Router>

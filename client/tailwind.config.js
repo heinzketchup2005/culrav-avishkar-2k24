@@ -10,6 +10,7 @@ export default {
       bebas: ['Bebas Neue', 'sans-serif'],
       bionix: ['Bionix', 'sans-serif'],
       moon: ['"MOONGETTI"'], // Added
+      sfText: ['"SF Pro Text"', 'Arial', 'sans-serif'],
     },
     extend: {
       screens: {
@@ -27,9 +28,18 @@ export default {
       colors: {
         customOrange: "#f54e25",
         floral_white: "#FFFAF0",
+        customGreen: "#35812a",
+				flamingo_50: "#fff3ed",
         silver: "#c6c6c6",
         dark_primary: "#202020",
         dark_secondary: "#2d2d2d",
+        Mine_Shaft_300: "#B0B0B0",
+        Mine_Shaft_900: "#3D3D3D",
+        Mine_Shaft_100: "#E7E7E7",
+        Mine_Shaft_800: "#454545",
+        Mine_Shaft_700: "#616161",
+        custom_gray_100: "#d1d1d1",
+        customRed: "#C43333",
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -78,5 +88,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate")]
 }
