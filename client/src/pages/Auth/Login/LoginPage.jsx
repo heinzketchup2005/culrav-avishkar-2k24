@@ -1,14 +1,14 @@
 import { Button } from "@/ShadCnComponents/ui/button";
 import Input from "@/ShadCnComponents/ui/Input";
 import axios from "axios";
-import { Loader2 } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../utils/useAuth";
-import { login } from "@/store/authSlice";
+import useAuth from "../../../lib/useAuth";
+import { signInStart, signInSuccess, signInFailure } from "@/redux/auth/authSlice";
+import { ClipLoader } from "react-spinners"; 
 
 const apiClient = axios.create({
   baseURL: "http://localhost:3000",
@@ -16,44 +16,43 @@ const apiClient = axios.create({
 
 function Login() {
   const { register, handleSubmit } = useForm();
-  const [submit, setSubmit] = useState(false);
-  const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useAuth();
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    dispatch(signInFailure(null));
+  }, [dispatch]);
 
   const userlogin = async (data) => {
     console.log(data);
+    if (!data.email || !data.password) {
+      return dispatch(signInFailure("Please fill all the fields"));
+    }
+
     try {
-      setSubmit(true); // Start loading spinner
+      dispatch(signInStart());
       const response = await apiClient.post(`/api/auth/v1/login`, data);
       const responseData = response.data;
 
       if (response.status === 200) {
-        // Store token in local storage
-        localStorage.setItem("token", responseData.token);
-        dispatch(login({ user: responseData.user }));
-
+        dispatch(signInSuccess({ user: responseData.user, token: responseData.token }));
         navigate("/");
-
-        // console.log('Stored token:', localStorage.getItem('token'));
       } else {
-        console.error("Login failed");
+        dispatch(signInFailure("Login failed"));
       }
     } catch (error) {
-      setError(error.response ? error.response.data.message : error.message);
-      console.error(
-        "Error during login:",
-        error.response ? error.response.data.message : error.message
-      );
-    } finally {
-      setSubmit(false);
+      const errorMessage = error.response ? error.response.data.message : error.message;
+      dispatch(signInFailure(errorMessage));
+      console.error("Error during login:", errorMessage);
     }
   };
 
@@ -61,7 +60,7 @@ function Login() {
     <div className="flex items-center justify-center min-h-screen w-full bg-[#FFF2D5] px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col items-center justify-center w-full max-w-lg sm:max-w-md md:max-w-lg lg:max-w-xl p-6 sm:p-8 bg-[#2D2D2D] shadow-lg">
         {/* Page Title */}
-        <h1 className="text-center  font-bold font-bionix text-2xl sm:text-3xl lg:text-4xl text-[#FFFAF0]  leading-tight mb-4">
+        <h1 className="text-center font-bold font-bionix text-2xl sm:text-3xl lg:text-4xl text-[#FFFAF0] leading-tight mb-4">
           Welcome back!
         </h1>
         {/* Subtext */}
@@ -77,7 +76,7 @@ function Login() {
         {/* Form */}
         <form
           onSubmit={handleSubmit(userlogin)}
-          className="w-full space-y-4  sm:space-y-5 lg:space-y-6"
+          className="w-full space-y-4 sm:space-y-5 lg:space-y-6"
         >
           <Input
             placeholder="Enter Email Id"
@@ -111,7 +110,7 @@ function Login() {
               )}
             </button>
           </div>
-          {error && <div className="text-[#F54E25]">*{error}</div>}
+          {errorMessage && <div className="text-[#F54E25]">*{errorMessage}</div>}
           {/* Forgot Password Link */}
           <Link
             to="/forget-password"
@@ -120,8 +119,8 @@ function Login() {
             Forgot password?
           </Link>
           {/* Submit Button or Loader */}
-          {submit ? (
-            <Loader2 className="w-6 h-6 mx-auto text-white bg-[#F54E25] hover:bg-orange-500 animate-spin" />
+          {loading ? (
+            <ClipLoader color="#F54E25" size={35} className="mx-auto" />
           ) : (
             <Button
               type="submit"

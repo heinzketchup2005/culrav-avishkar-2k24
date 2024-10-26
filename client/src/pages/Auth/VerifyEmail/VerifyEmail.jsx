@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../utils/useAuth";
+import useAuth from "../../../lib/useAuth";
 
 // Base URL for all requests (updated for better fallback)
 const apiClient = axios.create({

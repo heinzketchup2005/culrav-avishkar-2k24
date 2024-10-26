@@ -1,29 +1,38 @@
 import { useState } from "react";
-import Profile from "../../Components/UserDashBoard/Profile"
+import Profile from "../../Components/UserDashBoard/Profile";
 import UploadResume from "../../Components/UserDashBoard/UploadResume";
 import CreateTeam from "../../Components/UserDashBoard/CreateTeam";
 import { useNavigate } from "react-router-dom";
-// loadinng icons
-import userround from "../../assets/userDashBoard/VerticalNavIcons/user-round.png"
-import Frame from "../../assets/userDashBoard/VerticalNavIcons/Frame.png"
-import History from "../../assets/userDashBoard/VerticalNavIcons/History.png"
-import userroundplus from "../../assets/userDashBoard/VerticalNavIcons/user-round-plus.png"
-import usersround from "../../assets/userDashBoard/VerticalNavIcons/users-round.png"
-import logout from "../../assets/userDashBoard/VerticalNavIcons/logout.png"
+import { useDispatch } from "react-redux";
+import { signoutSuccess } from "@/redux/auth/authSlice";
+// loading icons
+import userround from "../../assets/userDashBoard/VerticalNavIcons/user-round.png";
+import Frame from "../../assets/userDashBoard/VerticalNavIcons/Frame.png";
+import History from "../../assets/userDashBoard/VerticalNavIcons/History.png";
+import userroundplus from "../../assets/userDashBoard/VerticalNavIcons/user-round-plus.png";
+import usersround from "../../assets/userDashBoard/VerticalNavIcons/users-round.png";
+import logout from "../../assets/userDashBoard/VerticalNavIcons/logout.png";
 
 const VerticalSideBar = () => {
   const [activeItem, setActiveItem] = useState("Profile");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(signoutSuccess());
+    navigate("/login");
+  };
+
   const renderPageContent = () => {
     switch (activeItem) {
       case "Profile":
-        return <Profile/>;
+        return <Profile />;
       case "Upload Resume":
-        return <UploadResume/>;
+        return <UploadResume />;
       case "My Teams":
         return <div>My Teams Page Content</div>;
       case "Create Team":
-        return <CreateTeam/>;
+        return <CreateTeam />;
       case "View Invitation":
         return <div>Invitation Page Content</div>;
       default:
@@ -109,10 +118,7 @@ const VerticalSideBar = () => {
           </div>
 
           <div className="h-[45vh] cursor-pointer flex flex-col-reverse">
-            <div className="flex gap-3"  onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/login");
-          }}>
+            <div className="flex gap-3" onClick={handleLogout}>
               <img src={logout} alt="" />
               <h1>Logout</h1>
             </div>

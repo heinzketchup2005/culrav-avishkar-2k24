@@ -4,11 +4,15 @@ import UploadResume from "../../Components/UserDashBoard/UploadResume";
 import CreateTeam from "../../Components/UserDashBoard/CreateTeam";
 import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { signoutSuccess } from "@/redux/auth/authSlice";
+
 const Popup = () => {
     const [isOpen, setIsOpen] = useState(false); 
     const [activeItem, setActiveItem] = useState("Profile");
     const popupRef = useRef(null);
-    const navigate=useNavigate();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     
     const toggle = () => {
         setIsOpen(!isOpen); 
@@ -16,6 +20,11 @@ const Popup = () => {
 
     const handleNavigation = (item) => {
         setActiveItem(item); 
+    };
+
+    const handleLogout = () => {
+        dispatch(signoutSuccess());
+        navigate("/login");
     };
 
     useEffect(() => {
@@ -57,7 +66,6 @@ const Popup = () => {
         <div className="relative md:hidden">
             <div ref={popupRef} className="relative">
                 <div
-                    
                     className={`md:hidden w-[100vw] fixed transition-all flex flex-col gap-8 justify-center items-center font-Sfpro text-[18px] duration-1000 h-[460px] bg-scheduleLargeText border-0 top-[0] z-[20] rounded-b-[46px] ${isOpen ? "transform translate-y-[90px]" : "transform translate-y-[-330px]"}`}
                 >
                     <ul className="flex flex-col gap-5 justify-center items-center text-mineShaft">
@@ -69,11 +77,11 @@ const Popup = () => {
                     </ul>
 
                     <button
-                     onClick={() => {
-                        // console.log("here");
-                        localStorage.removeItem("token");
-                        navigate("/login");
-                      }} className="w-[160px] h-[40px] bg-register border-0 rounded-sm text-white">Logout</button>
+                        onClick={handleLogout}
+                        className="w-[160px] h-[40px] bg-register border-0 rounded-sm text-white"
+                    >
+                        Logout
+                    </button>
 
                     <div className="absolute bottom-0 right-0 w-full flex justify-center">
                         <button onClick={toggle} className="text-white rounded-full p-2">

@@ -23,6 +23,7 @@ import Home from "./pages/Home/HomePage";
 import PayFeesPage from "./pages/PayFees/PayRegistrationFeePage";
 import UserProfilePage from "./pages/UserDashboard/UserProfilePage";
 import Team from "./pages/Team/TeamPage";
+import PrivateRoute from "./Components/General/PrivateRoute";
 
 const TitleUpdater = () => {
   const location = useLocation();
@@ -68,7 +69,7 @@ const TitleUpdater = () => {
       case "/team":
         title += " Team";
         break;
-        case "/profile":
+      case "/profile":
         title += " Profile";
         break;
       default:
@@ -102,7 +103,9 @@ function App() {
         <Route path="/AvishkarEvents" element={<AvishkarEvents />} />
         <Route path="/AvishkarEventPage" element={<AvishkarEvent />} />
         <Route path="/team" element={<Team />} />
-        <Route path="/profile" element={<UserProfilePage />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<UserProfilePage />} />
+        </Route>
       </Routes>
       <Footer />
     </Router>
