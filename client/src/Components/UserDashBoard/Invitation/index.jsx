@@ -1,17 +1,50 @@
 import InvitationCard from "@/Components/UserDashboard/Invitation/InviteCard"
 import ScrollableDiv from "@/Components/UserDashboard/shared/ScrollableDiv"
 import ContentBox from "@/assets/userDashBoard/ContentBox.png"
+import { isValidElement, useEffect, useState } from "react"
+import useAuth from "../../../lib/useAuth.js"
+import { useNavigate } from "react-router-dom"
+import { getInvitations } from "../services.js"
+import getUser from "../userService.js"
 
 function Invitations() {
-    const invites = [{ teamName: "Trycatch-0" }, {
-        teamName: "Trycatch-1"
-    },
-    { teamName: "Trycatch-2" },
-    { teamName: "Trycaatch-3" },
-    { teamName: "Trycaatch-3" },
-    { teamName: "Trycaatch-3" },
-    { teamName: "Trycaatch-3" },
-    ]
+
+    const [allTeams, setAllTeams] = useState([])
+    const isAuthenticated = useAuth()
+    const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
+
+    const {user, token} = getUser()
+
+    useEffect(() => {
+        if(!isAuthenticated){
+            navigate("/")
+        }
+        
+    }, [isAuthenticated])
+
+    useEffect(() => {
+        const fetchData = async() => {
+            try{
+                setLoading(true)
+                const res = await getInvitations({userId : user._id, token})
+                if(res?.ok){
+                    setAllTeams(res?.teams)
+                    setLoading(false)
+                }
+            }catch(err){
+                setLoading(true)
+                console.log(err)
+            }
+        }
+        fetchData()
+    } , [token])
+
+    
+
+    if(!loading){
+        console.log(`all teams : ${allTeams}`)
+    }
 
 
     return (
@@ -25,7 +58,7 @@ function Invitations() {
                 backgroundRepeat: 'no-repeat',
             }}>
 
-            {invites.length > 0 ? <div className=" w-full flex gap-4  text-xl flex-col 
+            {allTeams.length > 0 ? <div className=" w-full flex gap-4  text-xl flex-col 
             ">
                 <div className="font-sfText leading-tight text-2xl mb-5 font-bold">Recieved Invitations</div>
                 <div className="overflow-y-scroll flex flex-col gap-5 
@@ -33,7 +66,7 @@ function Invitations() {
                 [&::-webkit-scrollbar-thumb]:rounded-full 
                 [&::-webkit-scrollbar-thumb]:bg-dark_secondary
                 max-h-[600px] md:max-h-[450px]">
-                    {invites.map((invite) => {
+                    {allTeams.map((invite) => {
                         return (
                             <InvitationCard invite={invite} />
                         )

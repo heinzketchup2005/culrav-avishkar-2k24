@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TeamOptions from "../shared/TeamOptions";
 import ContentBox from "../../../assets/userDashBoard/ContentBox.png";
+import useAuth from "../../../lib/useAuth.js"
+import { useNavigate } from "react-router-dom";
+import getUser from "../userService.js";
+import { createTeam } from "../services.js";
 
 const CreateTeam = () => {
   const [teamName, setTeamName] = useState("");
   const [teamSize, setTeamSize] = useState(1);
 
+  const {user, token} = getUser()
+  const isAuthenticated = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() =>{
+    if(!isAuthenticated){
+      navigate("/")
+    }
+  }, [isAuthenticated])
+  
   const handleTeamNameChange = (name) => {
     setTeamName(name);
   };
@@ -13,6 +27,14 @@ const CreateTeam = () => {
   const handleTeamSizeChange = (size) => {
     setTeamSize(size);
   };
+
+  const handleSubmit = async() => {
+    try{
+      await createTeam({leader : user._id, teamName , teamSize : teamSize})
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <div className="md:w-[74vw] custom1000:w-[80vw] custom1840:w-[83vw] bg-[url('/ContentBox.png')] w-full absolute top-[92px] flex justify-center items-center h-full md:h-auto"
@@ -35,7 +57,7 @@ const CreateTeam = () => {
         />
         
         <div className="mt-8 flex items-center justify-center w-full">
-          <button className="text-[30px] font-bebas flex items-center justify-center text-white bg-scheduleOrange h-[50px] w-[215px] py-[8px] px-[29px]">
+          <button className="text-[30px] font-bebas flex items-center justify-center text-white bg-scheduleOrange h-[50px] w-[215px] py-[8px] px-[29px]" onClick={handleSubmit}>
             CREATE
           </button>
         </div>

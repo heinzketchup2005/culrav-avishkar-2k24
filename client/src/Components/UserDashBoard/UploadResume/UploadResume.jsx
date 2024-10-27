@@ -1,9 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ContentBox from "../../../assets/userDashBoard/ContentBox.png";
+import useAuth from "../../../lib/useAuth.js"
+import getUser from "../userService.js";
+import { useNavigate } from "react-router-dom";
+import { updateResume } from "../services";
+
 
 
 const UploadResume = () => {
+
+  const isAuthenticated = useAuth()
+  const {user, token} = getUser()
+
+  const navigate = useNavigate()
   const [link, setLink] = useState(""); 
+
+  useEffect(() => {
+    if(!isAuthenticated){
+      navigate("/")
+    }
+  }, [isAuthenticated])
+
+  const handleUpload = async() => {
+    try{
+      const res = await updateResume({email:user.email, resumeLink:link, token})
+      if(res?.ok){
+        console.log(res?.msg)
+      }
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   const handleInputChange = (e) => {
     setLink(e.target.value); 
@@ -40,6 +67,7 @@ const UploadResume = () => {
             <p className="text-center text-[17px] text-scheduleOrange font-Sfpro">Make Sure it is public</p>
             <button
               className="text-[30px] font-bebas flex items-center justify-center text-white bg-scheduleOrange h-[50px] w-[215px] py-[8px] px-[29px]"
+              onClick={handleUpload}
             >
               UPLOAD
             </button>

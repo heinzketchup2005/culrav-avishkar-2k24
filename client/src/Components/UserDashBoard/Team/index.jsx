@@ -1,8 +1,48 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import UserTeams from './UesrTeams'
 import TeamInfo from './TeamInfo';
+import getUser from '../userService.js';
+import { useNavigate } from 'react-router-dom';
+import useAuth from "../../../lib/useAuth.js"
+import { getAllTeams, splitTeamsByLeader } from '../services.js';
 
 function Team() {
+
+    const {user, token} = getUser()
+    const navigate = useNavigate()
+    const isAuthenticated = useAuth()
+
+    const [myTeams, setMyTeams] = useState([])
+    const [joinedTeams, setJoinedTeams] = useState([])
+
+    useEffect(() => {
+        if(!isAuthenticated){
+            navigate("/")
+        }
+    }, [isAuthenticated])
+
+
+    useEffect(() => {
+        const fetchData = async() => {
+            try{
+                const res = await getAllTeams({userId : user._id, token})
+                if(res?.ok){
+                    const givenLeaderId = user._id
+                    const totalTeams = res?.totalTeams
+                    const {matchingLeaderTeams, nonMatchingLeaderTeams} = splitTeamsByLeader({totalTeams, givenLeaderId})
+                    setMyTeams(matchingLeaderTeams)
+                    setJoinedTeams(nonMatchingLeaderTeams)
+                }else{
+                    console.log(res?.msg)
+                }
+
+            }catch(err){
+                console.log(err)
+            }
+        }
+        fetchData()
+    }, [token]) 
+
 
     const [showAllTeams, setShowAllTeams] = useState(true);
     const [teamData, setTeamData] = useState({});
@@ -50,6 +90,8 @@ function Team() {
 
     }]
 
+    const AllData = {myTeams, joinedTeams}
+
     const team_Data = {
         name: "TryCatch", size: 5, members: [
             { email: "member1@gmail.com", name: "member1" },
@@ -73,7 +115,7 @@ function Team() {
 
     function showTeamInfo(team) {
         setShowAllTeams(false);
-        setTeamData(team_Data);
+        setTeamData(team);
     }
 
     function handleShowAllTeams() {
@@ -88,7 +130,7 @@ function Team() {
                     <div className="md:px-9 md:h-screen-minus-92 h-auto md:py-7 p-4 justify-center  bg-dark_secondary grid  border-[#202020]/100 border-2 w-full ">
 
                         <div className=' h-[90%] w-full'>
-                            <UserTeams showTeamInfo={showTeamInfo} teamData={data} />
+                            <UserTeams showTeamInfo={showTeamInfo} teamData={AllData} />
                         </div>
                     </div>
                 </div > :

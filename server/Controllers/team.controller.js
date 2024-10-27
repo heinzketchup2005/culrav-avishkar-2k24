@@ -5,7 +5,7 @@ import User from "../Models/user.model.js";
 
 //wherever [teamId and userId means objectId(_id) of the document created by mongoDB]
 const createTeam = async (req, res, next) => {
-  const { teamName, leader } = req.body;
+  const { teamName, leader, size } = req.body;
 
   if (!teamName) {
     return res.status(400).json({
@@ -40,7 +40,7 @@ const createTeam = async (req, res, next) => {
       });
     }
 
-    const newTeam = await Team.create({ teamName, leader });
+    const newTeam = await Team.create({ teamName, leader, size});
     newTeam.acceptedMembers = [...newTeam.acceptedMembers, leader];
     ld.participatingTeam = [...ld.participatingTeam, newTeam._id];
     await ld.save();
@@ -254,6 +254,14 @@ const sendTeamInvite = async (req, res, next) => {
         msg: "targetUser is not registered.",
       });
     }
+    // leader can not sent the invite to himself
+
+    if(targetUser._id === leaderId){
+      return res.status(400).json({
+        ok:false,
+        msg:"You can not send team invite to yourself"
+      })
+    } 
 
     const targetUserId = JSON.stringify(targetUser._id);
 

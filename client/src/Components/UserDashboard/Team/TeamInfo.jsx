@@ -5,15 +5,17 @@ import { Button } from "@/ShadCnComponents/ui/button"
 import { useNavigate } from "react-router-dom"
 import Alert from "@/Components/UserDashboard/shared/Alert"
 import deletUserImg from "../../../assets/userDashBoard/deleteUser.svg"
+import getUser from '../userService'
 
 function TeamInfo({ team, handleShowAllTeams }) {
     const navigate = useNavigate();
+    const {user, token} = getUser()
     const [openRemoveMemberModal, setOpenRemoveMemberModal] = useState(false);
     const [removeMemberInfo, setRemoveMemebrInfo] = useState(null)
 
+    const [email, setEmail] = useState("")
     function handleRemoveMember() {
     }
-
 
 
     function handleBack() {
@@ -28,9 +30,19 @@ function TeamInfo({ team, handleShowAllTeams }) {
         setRemoveMemebrInfo(member)
     }
 
+    const handleInputChange = (e) => {
+        setEmail(e.target.value)
+    }
 
-    const isLeader = true;
+    const handleInvite = async() => {
+        console.log(email)
+    }
+    console.log(team)
+    var isLeader = false;
 
+    if(team?.leader === user._id){
+        isLeader = true
+    }
     return (
         <div className="w-full h-full  bg-dark_secondary p-3 md:p-5 flex flex-col">
             <div onClick={handleBack} className="flex flex-row items-center gap-2 mb-10 w-auto
@@ -41,40 +53,49 @@ function TeamInfo({ team, handleShowAllTeams }) {
                 <div className="text-customOrange text-lg">Back</div>
             </div>
             <div className="w-full h-full flex flex-col md:px-4">
-                <div className="text-3xl text-white font-medium font-sfText leading-tight mb-5">{team.name}</div>
+                <div className="text-3xl text-white font-medium font-sfText leading-tight mb-5">{team?.teamName}</div>
                 <div className="flex flex-col md:flex-row gap-10 mt-5">
-                    <div className="w-full h-auto flex flex-col gap-5">
-                        <input type="text" placeholder="Team Member's email id" className="bg-Mine_Shaft_900 text-Mine_Shaft_300 px-5 py-3 rounded-md font-sfText text-lg md:text-md" />
+                    {isLeader && <div className="w-full h-auto flex flex-col gap-5">
+                        <input type="email" placeholder="Team Member's email id" className="bg-Mine_Shaft_900 text-Mine_Shaft_300 px-5 py-3 rounded-md font-sfText text-lg md:text-md" 
+                         value={email}
+                         onChange={handleInputChange}
+                        />
                         <div>
-                            <div className="bg-customOrange hover:cursor-pointer text-white font-normal font-sfText rounded-md hover:bg-customRed text-lg md:text-md text-center p-3">
+                            <div className="bg-customOrange hover:cursor-pointer text-white font-normal font-sfText rounded-md hover:bg-customRed text-lg md:text-md text-center p-3" onClick={handleInvite}>
                                 Add team member </div>
                         </div>
-                    </div>
+                    </div>}
+                    {!isLeader && <div className="w-full h-auto flex flex-col gap-5">
+                        <div>
+                            <div className="bg-customOrange hover:cursor-pointer text-white font-normal font-sfText rounded-md hover:bg-customRed text-lg md:text-md text-center p-3">
+                                Leave Team </div>
+                        </div>
+                    </div>}
                     <div className="w-full h-auto flex flex-col gap-4 mt-2 text-lg text-white">
-                        <div>Team size: {team.size}</div>
-                        <div>Accepted Members: {team.acceptedMembers}</div>
-                        <div>Pending Invites: {team.pendingInvites}</div>
+                        <div>Team size: {team?.size}</div>
+                        <div>Accepted Members: {team?.acceptedMembers.length}</div>
+                        <div>Pending Invites: {team?.pendingMembers.length}</div>
                     </div>
                 </div>
                 <div className="mt-16 flex flex-col md:flex-row gap-16 md:gap-5">
                     <ScrollableDiv title="Participated Events" titleStyle="ml-3 md:ml-5 text-xl mb-7 text-white">
-                        {team.participatedEvents.map((event) => {
+                        {team?.registeredEvents?.map((event) => {
                             return (
                                 <div className="mb-3 h-auto w-full p-2 md:px-5 md:py-4 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex">
-                                    <div className="text-Mine_Shaft_300 text-md md:text-lg font-normal font-sfText leading-tight">{team.name}</div>
+                                    <div className="text-Mine_Shaft_300 text-md md:text-lg font-normal font-sfText leading-tight">{event}</div>
                                 </div>
                             )
                         })}
                     </ScrollableDiv>
                     <ScrollableDiv title="Team members" titleStyle="ml-3 md:ml-5 text-xl mb-7 text-white">
-                        {team.members.map((member) => {
+                        {team?.acceptedMembers?.map((member) => {
                             return (
                                 <div className="mb-3 h-auto w-full px-2 py-2 md:px-5 md:py-4 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex">
                                     <div className="flex flex-col gap-1">
-                                        <div class="text-Mine_Shaft_100 text-md md:text-lg font-normal font-sfText leading-tight">{member.name}</div>
-                                        {/* <div class="text-Mine_Shaft_300 text-lg font-normal font-sfText leading-tight">{member.email}</div> */}
+                                        <div class="text-Mine_Shaft_100 text-md md:text-lg font-normal font-sfText leading-tight">{member}</div>
+                                        <div class="text-Mine_Shaft_300 text-lg font-normal font-sfText leading-tight">{member}</div>
                                     </div>
-                                    {isLeader && <Button className="text-Mine_Shaft_100 text-md md:text-lg bg-customRed hover:bg-red-500 px-5" onClick={(e) => { openRemoveModal({ e, member }) }}>Remove</Button>}
+                                    {isLeader && member != user._id && <Button className="text-Mine_Shaft_100 text-md md:text-lg bg-customRed hover:bg-red-500 px-5" onClick={(e) => { openRemoveModal({ e, member }) }}>Remove</Button>}
                                 </div>
                             )
                         })}
