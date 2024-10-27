@@ -29,6 +29,12 @@ html {
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url('./assets/fonts/BebasNeue-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
 
 @font-face {
   font-family: 'Manrope';
@@ -47,12 +53,6 @@ html {
 @font-face {
   font-family: 'sftext';
   src: url("./assets/fonts/sfText_regular.OTF") format('opentype');
-}
-@font-face {
-    font-family: 'Bebas Neue';
-    src: url('./assets/fonts/BebasNeue-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
 }
 
 @layer base {
@@ -119,9 +119,6 @@ html {
     @apply bg-background text-foreground;
   }
 }
-
-
-
 
 
 
