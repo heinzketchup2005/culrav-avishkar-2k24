@@ -50,28 +50,27 @@ const TitleUpdater = () => {
       case "/outside-registration/payFee":
         title += " Pay Fees";
         break;
-      case "/Culrav-Landing":
-        title += " Culrav Landing";
+      case "/culrav-landing":
+        title += " Culrav";
         break;
-      case "/CulravEvents":
+      case "/culravevents":
         title += " Culrav Events";
         break;
-      case "/CulravEventPage":
-        title += " Culrav Event";
+      case "/culraveventpage":
+        title += " Culrav Event Page";
         break;
-      case "/Avishkar-Landing":
-        title += " Avishkar Landing";
+      case "/avishkar-landing":
+        title += " Avishkar";
         break;
-      case "/AvishkarEvents":
+      case "/avishkarevents":
         title += " Avishkar Events";
         break;
-      case "/AvishkarEventPage":
-        title += " Avishkar Event";
+      case "/avishkareventpage":
+        title += " Avishkar Event Page";
         break;
       case "/team":
         title += " Team";
         break;
-      case "/profile":
       case "/profile":
         title += " Profile";
         break;
