@@ -7,8 +7,8 @@ const getAllTeamsOfAnEvent = async (req, res, next) => {
 
   if (!eventId) {
     return res.status(400).json({
-      ok: false,
-      msg: "eventId is missing",
+      success: false,
+      message: "eventId is missing",
     });
   }
 
@@ -26,15 +26,15 @@ const getAllTeamsOfAnEvent = async (req, res, next) => {
 
     if (!event) {
       return res.status(400).json({
-        ok: false,
-        msg: "No Event with this eventId",
+        success: false,
+        message: "No Event with this eventId",
       });
     }
 
     const participatingTeams = event.participatingTeams;
     res.status(200).json({
-      ok: true,
-      msg: "Retrieved all teams successfully.",
+      success: true,
+      message: "Retrieved all teams successfully.",
       participatingTeams,
     });
   } catch (err) {
@@ -47,22 +47,22 @@ const registerForEvent = async (req, res, next) => {
 
   if (!eventId) {
     return res.status(400).json({
-      ok: false,
-      msg: "eventId is missing",
+      success: false,
+      message: "eventId is missing",
     });
   }
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId is missing",
+      success: false,
+      message: "teamId is missing",
     });
   }
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId missing",
+      success: false,
+      message: "userId missing",
     });
   }
 
@@ -75,8 +75,8 @@ const registerForEvent = async (req, res, next) => {
 
     if (!event) {
       return res.status(400).json({
-        ok: false,
-        msg: "invalid eventId",
+        success: false,
+        message: "invalid eventId",
       });
     }
     //check is teamId is valid
@@ -93,16 +93,16 @@ const registerForEvent = async (req, res, next) => {
     ]);
     if (!tm) {
       return res.status(400).json({
-        ok: false,
-        msg: "invalid teamId",
+        success: false,
+        message: "invalid teamId",
       });
     }
     // check if userId is valid
     const user = await User.findById({ _id: userId });
     if (!user) {
       return res.status(400).json({
-        ok: false,
-        msg: "invalid userId",
+        success: false,
+        message: "invalid userId",
       });
     }
 
@@ -112,8 +112,8 @@ const registerForEvent = async (req, res, next) => {
 
     if (providedUserId != leaderId) {
       return res.status(400).json({
-        ok: false,
-        msg: "you can not resgiter, only leader is allowed",
+        success: false,
+        message: "you can not resgiter, only leader is allowed",
       });
     }
 
@@ -125,31 +125,31 @@ const registerForEvent = async (req, res, next) => {
 
     if (pdMembers.length > 0) {
       return res.status(400).json({
-        ok: false,
-        msg: "Can't register, as there are some unaccepted members in team",
+        success: false,
+        message: "Can't register, as there are some unaccepted members in team",
       });
     }
     // check is team size is approriate for this event
     const totalLen = acMembers.length;
     if (totalLen > event.maxTeamSize) {
       return res.status(400).json({
-        ok: false,
-        msg: `team size is big. only ${event.maxTeamSize} members team is allowed`,
+        success: false,
+        message: `team size is big. only ${event.maxTeamSize} members team is allowed`,
       });
     }
 
     if (totalLen < event.minTeamSize) {
       return res.status(400).json({
-        ok: false,
-        msg: `team size is small. team size shuold be atleast ${event.minTeamSize}`,
+        success: false,
+        message: `team size is small. team size shuold be atleast ${event.minTeamSize}`,
       });
     }
 
     //check if this team is already registered.
     if (event.participatingTeams.includes(teamId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "Already registered",
+        success: false,
+        message: "Already registered",
       });
     }
 
@@ -169,8 +169,8 @@ const registerForEvent = async (req, res, next) => {
     for (let i = 0; i < currTeamMembers.length; i++) {
       if (allMembers.includes(currTeamMembers[i])) {
         return res.status(400).json({
-          ok: false,
-          msg: `some members of this team have already registered with other team in this event`,
+          success: false,
+          message: `some members of this team have already registered with other team in this event`,
         });
       }
     }
@@ -178,8 +178,8 @@ const registerForEvent = async (req, res, next) => {
 
     if (!event.isOpen) {
       return res.status(400).json({
-        ok: false,
-        msg: "Registration is closed.",
+        success: false,
+        message: "Registration is closed.",
       });
     }
 
@@ -209,8 +209,8 @@ const registerForEvent = async (req, res, next) => {
     await tm.save();
 
     res.status(200).json({
-      ok: true,
-      msg: "Registered successfully!",
+      success: true,
+      message: "Registered successfully!",
     });
   } catch (err) {
     next(err);
@@ -222,8 +222,8 @@ const createEvent = async (req, res, next) => {
 
   if (!eventId || !eventName || !department || !maxTeamSize || !minTeamSize) {
     return res.status(400).json({
-      ok: false,
-      msg: "All fields are not present",
+      success: false,
+      message: "All fields are not present",
     });
   }
 
@@ -231,8 +231,8 @@ const createEvent = async (req, res, next) => {
     const event = await Event.findOne({ eventId });
     if (event) {
       return res.status(400).json({
-        ok: false,
-        msg: "An event is already present with this id",
+        success: false,
+        message: "An event is already present with this id",
       });
     }
 
@@ -245,8 +245,8 @@ const createEvent = async (req, res, next) => {
     });
 
     res.status(200).json({
-      ok: true,
-      msg: "Created Successfully!",
+      success: true,
+      message: "Created Successfully!",
       newEvent,
     });
   } catch (err) {
@@ -259,22 +259,22 @@ const leaveEvent = async (req, res, next) => {
   const { teamId, eventId, userId } = req.body;
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId is missing",
+      success: false,
+      message: "teamId is missing",
     });
   }
 
   if (!eventId) {
     return res.status(400).json({
-      ok: false,
-      msg: "eventId  is missing",
+      success: false,
+      message: "eventId  is missing",
     });
   }
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId is missing",
+      success: false,
+      message: "userId is missing",
     });
   }
 
@@ -282,24 +282,24 @@ const leaveEvent = async (req, res, next) => {
     const user = await User.findById({ _id: userId });
     if (!user) {
       return res.status(400).json({
-        ok: false,
-        msg: "userId is invalid",
+        success: false,
+        message: "userId is invalid",
       });
     }
 
     const tm = await Team.findById({ _id: teamId });
     if (!tm) {
       return res.status(400).json({
-        ok: false,
-        msg: "teamId is invalid",
+        success: false,
+        message: "teamId is invalid",
       });
     }
 
     const event = await Event.findOne({ eventId });
     if (!event) {
       return res.status(400).json({
-        ok: false,
-        msg: "eventId is invalid",
+        success: false,
+        message: "eventId is invalid",
       });
     }
 
@@ -309,8 +309,8 @@ const leaveEvent = async (req, res, next) => {
     const currentUserId = JSON.stringify(userId);
     if (leaderId != currentUserId) {
       return res.status(400).json({
-        ok: false,
-        msg: "Only leader can leave the event",
+        success: false,
+        message: "Only leader can leave the event",
       });
     }
 
@@ -318,8 +318,8 @@ const leaveEvent = async (req, res, next) => {
 
     if (!event.isOpen) {
       return res.status(400).json({
-        ok: false,
-        msg: "Event has been closed, can't leave the team",
+        success: false,
+        message: "Event has been closed, can't leave the team",
       });
     }
   } catch (err) {
@@ -332,22 +332,22 @@ const updateStatusOfAnEvent = async (req, res, next) => {
 
   if (!status) {
     return res.status(400).json({
-      ok: false,
-      msg: "status is missing",
+      success: false,
+      message: "status is missing",
     });
   }
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId is missing",
+      success: false,
+      message: "userId is missing",
     });
   }
 
   if (!eventId) {
     return res.status(400).json({
-      ok: false,
-      msg: "eventId is missing",
+      success: false,
+      message: "eventId is missing",
     });
   }
 
@@ -356,16 +356,16 @@ const updateStatusOfAnEvent = async (req, res, next) => {
 
     if (!event) {
       return res.status(400).json({
-        ok: false,
-        msg: "invalid eventId",
+        success: false,
+        message: "invalid eventId",
       });
     }
 
     event.isOpen = status;
     event.save();
     res.status(200).json({
-      ok: true,
-      msg: "status updated.",
+      success: true,
+      message: "status updated.",
     });
   } catch (err) {
     next(err);
@@ -377,8 +377,8 @@ const getAllParticipatingEventsOfAUser = async (req, res, next) => {
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId is missing",
+      success: false,
+      message: "userId is missing",
     });
   }
 
@@ -395,16 +395,16 @@ const getAllParticipatingEventsOfAUser = async (req, res, next) => {
 
     if (!user) {
       return res.status(400).json({
-        ok: false,
-        msg: "User not found",
+        success: false,
+        message: "User not found",
       });
     }
 
     const participatingEvents = user.participatingEvents;
 
     res.status(200).json({
-      ok: true,
-      msg: "successfully retrieved!",
+      success: true,
+      message: "successfully retrieved!",
       participatingEvents,
     });
   } catch (err) {
@@ -417,8 +417,8 @@ const getAllParticipantsOfAnEvent = async (req, res, next) => {
 
   if (!eventId) {
     return res.status(400).json({
-      ok: false,
-      msg: "eventId missing",
+      success: false,
+      message: "eventId missing",
     });
   }
 
@@ -434,8 +434,8 @@ const getAllParticipantsOfAnEvent = async (req, res, next) => {
 
     if (!event) {
       return res.status(400).json({
-        ok: false,
-        msg: "Invalid eventId",
+        success: false,
+        message: "Invalid eventId",
       });
     }
 
@@ -448,8 +448,8 @@ const getAllParticipantsOfAnEvent = async (req, res, next) => {
     }
 
     res.status(200).json({
-      ok: true,
-      msg: "fetched successfully!",
+      success: true,
+      message: "fetched successfully!",
       members,
     });
   } catch (err) {

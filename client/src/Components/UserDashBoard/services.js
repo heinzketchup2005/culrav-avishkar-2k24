@@ -7,16 +7,10 @@ const createTeam = async({leader, teamName, teamSize, token}) => {
             {headers:{Authorization: `Bearer ${token}`}}
         )
         
-        if(response?.data?.ok){
-            console.log(response?.data?.msg)
-            return response?.data?.ok
-        }else{
-            console.log(response?.data?.msg)
-            return false
-        }
+        return response?.data
     }catch(err){
         console.log(err)
-        return false
+        return err?.response?.data
     }
 }
 
@@ -26,16 +20,10 @@ const getInvitations = async({userId, token}) => {
             {headers:{Authorization: `Bearer ${token}`}}
         )
 
-        if(response?.data?.ok){
-            console.log(response?.data?.msg);
-            return response?.data
-        }else{
-            console.log(response?.data?.msg)
-            return null
-        }
+        return response?.data
     }catch(err){
         console.log(err)
-        return false
+        return err?.response?.data
     }
 }
 
@@ -45,16 +33,10 @@ const getAllTeams = async({userId, token}) => {
             {headers:{Authorization: `Bearer ${token}`}}
         )
 
-        if(response?.data?.ok){
-            console.log(response?.data?.msg);
-            return response?.data
-        }else{
-            console.log(response?.data?.msg)
-            return null
-        }
+        return response?.data
     }catch(err){
         console.log(err)
-        return null
+        return err?.response?.data
     }
 
 }
@@ -77,17 +59,49 @@ const updateResume = async({email, resumeLink, token}) => {
             {headers:{Authorization: `Bearer ${token}`}}
         )
 
-        if(response?.data?.ok){
-            console.log(response?.data?.msg);
-            return response?.data
-        }else{
-            console.log(response?.data?.msg)
-            return null
-        }
+        return response?.data
     }catch(err){
         console.log(err)
-        return null
+        return err?.response?.data
     }
 }
 
-export {createTeam, getInvitations, getAllTeams, splitTeamsByLeader, updateResume}
+const acceptInvite = async({userId, teamId, token}) => {
+    try{
+        const response = await Axios.post(`/team/v1/acceptInvite`,
+            {userId, teamId},
+            {headers:{Authorization: `Bearer ${token}`}}
+        )
+
+        return response?.data
+    }catch(err){
+        console.log(err)
+        return err?.response?.data
+    }
+}
+
+const rejectInvite = async({userId, teamId, token}) => {
+    try{
+        const response = await Axios.post(`/team/v1/rejectInvite`,
+            {userId, teamId},
+            {headers:{Authorization: `Bearer ${token}`}}
+        )
+
+        return response?.data
+    }catch(err){
+        console.log(err)
+        return err?.response?.data
+    }
+
+}
+
+
+export {createTeam, 
+    getInvitations, 
+    getAllTeams, 
+    splitTeamsByLeader, 
+    updateResume, 
+    acceptInvite,
+    rejectInvite
+}
+
