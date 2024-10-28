@@ -4,6 +4,7 @@ import useAuth from "../../../lib/useAuth.js"
 import getUser from "../userService.js";
 import { useNavigate } from "react-router-dom";
 import { updateResume } from "../services";
+import toast from "react-hot-toast";
 
 
 
@@ -24,8 +25,11 @@ const UploadResume = () => {
   const handleUpload = async() => {
     try{
       const res = await updateResume({email:user.email, resumeLink:link, token})
-      if(res?.ok){
-        console.log(res?.msg)
+      if(res?.success){
+        toast.success("Resume Updated!")
+        console.log(res?.message)
+      }else{
+        toast.error(res?.message)
       }
     }catch(err){
       console.log(err)

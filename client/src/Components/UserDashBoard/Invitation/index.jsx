@@ -6,10 +6,11 @@ import useAuth from "../../../lib/useAuth.js"
 import { useNavigate } from "react-router-dom"
 import { getInvitations } from "../services.js"
 import getUser from "../userService.js"
+import toast from "react-hot-toast"
 
 function Invitations() {
 
-    const [allTeams, setAllTeams] = useState([])
+    const [allTeamInvites, setAllTeamInvites] = useState([])
     const isAuthenticated = useAuth()
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
@@ -28,9 +29,12 @@ function Invitations() {
             try{
                 setLoading(true)
                 const res = await getInvitations({userId : user._id, token})
-                if(res?.ok){
-                    setAllTeams(res?.teams)
+                if(res?.success){
+                    setAllTeamInvites(res?.teams)
                     setLoading(false)
+                    toast.success("invitation fetched successfully!")
+                }else{
+                    toast.error(res?.message)
                 }
             }catch(err){
                 setLoading(true)
@@ -43,7 +47,7 @@ function Invitations() {
     
 
     if(!loading){
-        console.log(`all teams : ${allTeams}`)
+        console.log(`all teams : ${allTeamInvites}`)
     }
 
 
@@ -58,7 +62,7 @@ function Invitations() {
                 backgroundRepeat: 'no-repeat',
             }}>
 
-            {allTeams.length > 0 ? <div className=" w-full flex gap-4  text-xl flex-col 
+            {allTeamInvites.length > 0 ? <div className=" w-full flex gap-4  text-xl flex-col 
             ">
                 <div className="font-sfText leading-tight text-2xl mb-5 font-bold">Recieved Invitations</div>
                 <div className="overflow-y-scroll flex flex-col gap-5 
@@ -66,9 +70,9 @@ function Invitations() {
                 [&::-webkit-scrollbar-thumb]:rounded-full 
                 [&::-webkit-scrollbar-thumb]:bg-dark_secondary
                 max-h-[600px] md:max-h-[450px]">
-                    {allTeams.map((invite) => {
+                    {allTeamInvites.map((invite) => {
                         return (
-                            <InvitationCard invite={invite} />
+                            <InvitationCard invite={invite} setAllTeamInvites = {setAllTeamInvites} allInviteData = {allTeamInvites}/>
                         )
                     })}
                 </div>
