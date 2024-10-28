@@ -246,6 +246,15 @@ const sendTeamInvite = async (req, res, next) => {
       });
     }
 
+    //check if this team is participating in any event, if so you can't add members.
+    
+    if(tm.registeredEvents.length > 0){
+      return res.status(400).json({
+        ok:false,
+        msg:"Team is already participating in any event, can't send the invite"
+      })
+    }
+
     const targetUser = await User.findOne({ email: sendToEmail });
 
     if (!targetUser) {
@@ -438,6 +447,15 @@ const acceptInvite = async (req, res, next) => {
         ok: false,
         msg: "team not found",
       });
+    }
+
+    //check if team is participating in any event. [even though team can't participate in any event if it has any pending memeber].
+
+    if(tm.registeredEvents.length > 0){
+      return res.status(400).json({
+        ok:false,
+        msg:"Team is already in any event."
+      })
     }
 
     //first check if user have this invite or not
