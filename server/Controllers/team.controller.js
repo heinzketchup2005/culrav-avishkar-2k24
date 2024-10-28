@@ -302,8 +302,8 @@ const sendTeamInvite = async (req, res, next) => {
     targetUser.pendingTeam = [...targetUser.pendingTeam, tm._id];
     tm.pendingMembers = [...tm.pendingMembers, targetUser._id];
 
-    tm.save();
-    targetUser.save();
+    await tm.save();
+    await targetUser.save();
 
     res.status(200).json({
       ok: true,
@@ -865,6 +865,10 @@ const getParticipatingTeamsOfAUser = async (req, res, next) => {
     const user = await User.findById({ _id: userId }).populate({
       path: "participatingTeam",
       model: Team,
+      populate: {
+        path: "acceptedMembers",
+        model: User,
+      }
     });
 
     if (!user) {

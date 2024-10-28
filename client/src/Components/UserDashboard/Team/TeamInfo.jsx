@@ -92,10 +92,10 @@ function TeamInfo({ team, handleShowAllTeams }) {
                             return (
                                 <div className="mb-3 h-auto w-full px-2 py-2 md:px-5 md:py-4 bg-Mine_Shaft_900 rounded justify-between items-center inline-flex">
                                     <div className="flex flex-col gap-1">
-                                        <div class="text-Mine_Shaft_100 text-md md:text-lg font-normal font-sfText leading-tight">{member}</div>
-                                        <div class="text-Mine_Shaft_300 text-lg font-normal font-sfText leading-tight">{member}</div>
+                                        <div class="text-Mine_Shaft_100 text-md md:text-lg font-normal font-sfText leading-tight">{member?.name}</div>
+                                        <div class="text-Mine_Shaft_300 text-lg font-normal font-sfText leading-tight">{member?.userName}</div>
                                     </div>
-                                    {isLeader && member != user._id && <Button className="text-Mine_Shaft_100 text-md md:text-lg bg-customRed hover:bg-red-500 px-5" onClick={(e) => { openRemoveModal({ e, member }) }}>Remove</Button>}
+                                    {isLeader && member._id != user._id && <Button className="text-Mine_Shaft_100 text-md md:text-lg bg-customRed hover:bg-red-500 px-5" onClick={(e) => { openRemoveModal({ e, member }) }}>Kick</Button>}
                                 </div>
                             )
                         })}
