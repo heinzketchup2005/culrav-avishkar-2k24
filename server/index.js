@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 // Auth rate limiter
 const authLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 10, // Limit to 10 requests per 10 minutes
+  max: 100, // Limit to 10 requests per 10 minutes
   message: "Too many attempts, please try again later.",
 });
 

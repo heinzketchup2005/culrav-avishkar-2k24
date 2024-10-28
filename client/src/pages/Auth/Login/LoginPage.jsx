@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../lib/useAuth";
 import { signInStart, signInSuccess, signInFailure } from "@/redux/auth/authSlice";
-import { ClipLoader } from "react-spinners"; 
+import { ClipLoader } from "react-spinners";
+import toast, { Toaster } from 'react-hot-toast';
 
 const apiClient = axios.create({
   baseURL: "http://localhost:3000",
@@ -33,8 +34,8 @@ function Login() {
   }, [dispatch]);
 
   const userlogin = async (data) => {
-    console.log(data);
     if (!data.email || !data.password) {
+      toast.error("Please fill all the fields");
       return dispatch(signInFailure("Please fill all the fields"));
     }
 
@@ -45,13 +46,28 @@ function Login() {
 
       if (response.status === 200) {
         dispatch(signInSuccess({ user: responseData.user, token: responseData.token }));
+        toast.success("Login successful!");
         navigate("/");
+      } else if (response.status === 401 && responseData.isVerifiedEmail === false) {
+        // Redirect to verify email page if email is not verified
+        navigate("/verify-email", { state: { email: data.email } });
+        toast.error(responseData.message || "Please verify your email");
       } else {
+        toast.error(response.data.message || "Login failed");
         dispatch(signInFailure("Login failed"));
       }
     } catch (error) {
       const errorMessage = error.response ? error.response.data.message : error.message;
-      dispatch(signInFailure(errorMessage));
+      if (errorMessage=="Please verify your email") {
+        toast.error(errorMessage);
+        navigate("/verify-email", { state: { email: data.email } });
+      } else if (errorMessage=="Please pay the registration fee") {
+        toast.error(errorMessage);
+        navigate("/outside-registration/payFee", { state: { email: data.email } });
+      }else {
+        toast.error(errorMessage);
+        dispatch(signInFailure(errorMessage));
+      }
       console.error("Error during login:", errorMessage);
     }
   };
@@ -83,7 +99,6 @@ function Login() {
             type="email"
             className="w-full font-sftext bg-[#3D3D3D] text-[#B0B0B0]"
             {...register("email", {
-              required: true,
               validate: {
                 matchPattern: (value) =>
                   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
@@ -104,9 +119,9 @@ function Login() {
               className="absolute right-2 top-2.5"
             >
               {showPassword ? (
-                <EyeOff className="animate-pulse text-gray-500" />
+                <EyeOff className="animate-pulse transition-all duration-2000 text-gray-500" />
               ) : (
-                <Eye className="animate-pulse text-gray-500" />
+                <Eye className="animate-pulse transition-all duration-2000 text-gray-500" />
               )}
             </button>
           </div>
@@ -120,7 +135,7 @@ function Login() {
           </Link>
           {/* Submit Button or Loader */}
           {loading ? (
-            <ClipLoader color="#F54E25" size={35} className="mx-auto" />
+            <><div className="flex w-full items-center justify-center"><ClipLoader color="#F54E25" size={35} className="mx-auto" /></div></>
           ) : (
             <Button
               type="submit"
@@ -131,6 +146,7 @@ function Login() {
           )}
         </form>
       </div>
+      <Toaster />
     </div>
   );
 }

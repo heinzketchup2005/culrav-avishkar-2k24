@@ -1,13 +1,13 @@
-// import sendVerificationEmail from "@/lib/emailverification.js";
 import { Button } from "@/ShadCnComponents/ui/button.jsx";
 import Input from "@/ShadCnComponents/ui/Input";
 import axios from "axios";
-
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, matchPath, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../lib/useAuth";
+import toast, { Toaster } from 'react-hot-toast';
+
 const apiClient = axios.create({
   baseURL: "http://localhost:3000", // Base URL for all requests
 });
@@ -21,7 +21,7 @@ function OutsideRegistration() {
     watch,
   } = useForm();
   const [error, setError] = useState("");
-  const [submiting, setsubmiting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // checking if the user is already logged in
@@ -32,13 +32,44 @@ function OutsideRegistration() {
     }
   }, [isAuthenticated]);
 
-  useEffect(() => {}, [submiting]);
+  useEffect(() => {}, [submitting]);
 
   const create = async (data) => {
-    setsubmiting(true);
+    try {
+      console.log(data);
+      setSubmitting(true);
+      const response = await apiClient.post(`/api/auth/v1/register`, {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        isOtherCollege: true,
+        phone: `${data.phone}`, // Append +91 to the phone number
+        college: data.college,
+        collegeID: data.collegeID,
+      });
 
-    navigate("/outside-registration/payFee", { state: data });
-    setsubmiting(false);
+      // Check for a successful response (status code 201)
+      if (response.status === 201) {
+        setSubmitting(false);
+        toast.success(response.data.message);
+        navigate("/verify-email", { state: { email: data.email } });
+        console.log("User now went to verify user");
+      }
+    } catch (error) {
+      setSubmitting(false);
+      toast.error(error.response?.data?.message || "Registration failed. Please try again.");
+      // Safely handle different types of errors
+      if (error.response) {
+        // Server responded with a status outside the 2xx range (e.g., 400, 500)
+        console.log("Server Error:", error.response.data);
+      } else if (error.request) {
+        // Request was made but no response was received (e.g., network error)
+        console.log("No Response Received:", error.request);
+      } else {
+        // Some other error occurred (e.g., request setup issue)
+        console.log("Error:", error.message || "Unknown error occurred");
+      }
+    }
   };
 
   // Password confirmation validation
@@ -47,7 +78,7 @@ function OutsideRegistration() {
 
   return (
     <div className="flex items-center justify-center bg-[#FFF2D5] min-h-screen w-full">
-      <div className="flex flex-col items-center justify-center w-full max-w-md p-6 bg-[#2D2D2D]  mx-4 sm:mx-0">
+      <div className="flex flex-col items-center justify-center w-full max-w-md p-6 bg-[#2D2D2D] mx-4 sm:mx-0">
         <h1 className="text-center text-2xl sm:text-3xl text-[#FFFAF0] font-bold font-bionix leading-tight">
           Outside Participation for <br /> CULRAV-AVISHKAR
         </h1>
@@ -55,14 +86,14 @@ function OutsideRegistration() {
           Already got registered?
           <Link
             to={"/login"}
-            className="font-medium font-sftext text-[#F54E25]  hover:underline ml-1"
+            className="font-medium font-sftext text-[#F54E25] hover:underline ml-1"
           >
             Log in
           </Link>
         </p>
         <form
           onSubmit={handleSubmit(create)}
-          className="space-y-5  font-sftext w-full"
+          className="space-y-5 font-sftext w-full"
         >
           <Input
             placeholder="Full name"
@@ -78,14 +109,12 @@ function OutsideRegistration() {
             {...register("email", {
               required: "Email is required",
               validate: {
-                matchPattern: (value) => {
+                matchPattern: (value) =>
                   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-                    "email is not valid";
-                },
+                  "Email is not valid",
               },
             })}
           />
-
           {errors.email && (
             <p className="text-[#F54E25]">{errors.email.message}</p>
           )}
@@ -95,26 +124,35 @@ function OutsideRegistration() {
             {...register("phone", {
               required: "Phone no is required",
               validate: {
-                matchPattern: (value) => {
-                  /^[0-9]{10}$/.test(value) || "Phone must be a valid phone no";
-                },
+                matchPattern: (value) =>
+                  /^[0-9]{10}$/.test(value) || "Phone must be a valid phone no",
               },
             })}
           />
+          {errors.phone && (
+            <p className="text-[#F54E25]">{errors.phone.message}</p>
+          )}
+
           <Input
             placeholder="College Name"
             {...register("college", {
-              required: "college name is required",
+              required: "College name is required",
             })}
           />
+          {errors.college && (
+            <p className="text-[#F54E25]">{errors.college.message}</p>
+          )}
 
           <Input
             placeholder="College ID card (image url)"
             type="url"
             {...register("collegeID", {
-              required: "college ID is required",
+              required: "College ID is required",
             })}
           />
+          {errors.collegeID && (
+            <p className="text-[#F54E25]">{errors.collegeID.message}</p>
+          )}
 
           <div className="relative">
             <Input
@@ -170,20 +208,21 @@ function OutsideRegistration() {
             <p className="text-[#F54E25]">{errors.confirmPassword.message}</p>
           )}
 
-          {submiting ? (
+          {submitting ? (
             <Loader2 className="animate-spin justify-center items-center" />
           ) : (
             <Button
               type="submit"
-              className="w-full font-sftext bg-orange-600 hover:bg-orange-500 text-[#FFFAF0] py-3  font-semibold"
+              className="w-full font-sftext bg-orange-600 hover:bg-orange-500 text-[#FFFAF0] py-3 font-semibold"
             >
-              Pay Fee
+              Register
             </Button>
           )}
         </form>
 
         {error && <p className="text-[#F54E25]">{error}</p>}
       </div>
+      <Toaster />
     </div>
   );
 }

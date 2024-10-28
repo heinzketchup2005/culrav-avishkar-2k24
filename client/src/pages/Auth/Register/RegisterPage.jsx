@@ -1,12 +1,12 @@
 import { Button } from "@/ShadCnComponents/ui/button.jsx";
 import Input from "@/ShadCnComponents/ui/Input";
 import axios from "axios";
-
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../lib/useAuth";
+import toast, { Toaster } from 'react-hot-toast';
 
 const apiClient = axios.create({
   baseURL: "http://localhost:3000", // Base URL for all requests
@@ -21,7 +21,7 @@ function Register() {
     watch,
   } = useForm();
   const [error, setError] = useState("");
-  const [submiting, setsubmiting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   // checking if the user is already logged in
@@ -32,13 +32,12 @@ function Register() {
     }
   }, [isAuthenticated]);
 
-  // console.log("welcome to registeration ");
-  useEffect(() => {}, [submiting]);
-  const create = async (data) => {
+  useEffect(() => {}, [submitting]);
 
+  const create = async (data) => {
     try {
       console.log(data);
-      setsubmiting(true);
+      setSubmitting(true);
       const response = await apiClient.post(`/api/auth/v1/register`, {
         name: data.name,
         email: data.email,
@@ -47,14 +46,15 @@ function Register() {
         phone: `${data.phone}`, // Append +91 to the phone number
       });
 
-      // Check for a successful response (status code 200)
-      if (response.status == 201) {
-        setsubmiting(false);
+      // Check for a successful response (status code 201)
+      if (response.status === 201) {
+        setSubmitting(false);
+        toast.success(response.data.message );
         navigate("/verify-email", { state: { email: data.email } });
-        console.log("User now went to verify user");
       }
     } catch (err) {
-      setsubmiting(false);
+      setSubmitting(false);
+      toast.error(err.response?.data?.message || "Registration failed. Please try again.")
       // Safely handle different types of errors
       if (err.response) {
         // Server responded with a status outside the 2xx range (e.g., 400, 500)
@@ -75,7 +75,7 @@ function Register() {
 
   return (
     <div className="flex items-center justify-center bg-[#FFF2D5] min-h-screen w-full">
-      <div className="flex flex-col items-center justify-center w-full max-w-md p-6 bg-[#2D2D2D]  mx-4 sm:mx-0">
+      <div className="flex flex-col items-center justify-center w-full max-w-md p-6 bg-[#2D2D2D] mx-4 sm:mx-0">
         <h1 className="text-center text-2xl sm:text-3xl text-[#FFFAF0] font-bold font-bionix leading-tight">
           Register for <br /> CULRAV-AVISHKAR
         </h1>
@@ -83,14 +83,14 @@ function Register() {
           Already got registered?
           <Link
             to={"/login"}
-            className="font-medium font-sftext text-[#F54E25]  hover:underline ml-1"
+            className="font-medium font-sftext text-[#F54E25] hover:underline ml-1"
           >
             Log in
           </Link>
         </p>
         <form
           onSubmit={handleSubmit(create)}
-          className="space-y-5  font-sftext w-full"
+          className="space-y-5 font-sftext w-full"
         >
           <Input
             placeholder="Full name"
@@ -112,7 +112,6 @@ function Register() {
               },
             })}
           />
-
           {errors.email && (
             <p className="text-[#F54E25]">{errors.email.message}</p>
           )}
@@ -186,12 +185,12 @@ function Register() {
             <p className="text-[#F54E25]">{errors.confirmPassword.message}</p>
           )}
 
-          {submiting ? (
-            <Loader2 className="animate-spin justify-center items-center" />
+          {submitting ? (
+            <><div className="flex w-full items-center justify-center"><Loader2 className="mx-auto" /></div></>
           ) : (
             <Button
               type="submit"
-              className="w-full font-sftext bg-orange-600 hover:bg-orange-500 text-[#FFFAF0] py-3  font-semibold"
+              className="w-full font-sftext bg-orange-600 hover:bg-orange-500 text-[#FFFAF0] py-3 font-semibold"
             >
               Register
             </Button>
@@ -210,6 +209,7 @@ function Register() {
           </Link>
         </p>
       </div>
+      <Toaster />
     </div>
   );
 }

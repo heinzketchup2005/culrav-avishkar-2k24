@@ -44,6 +44,9 @@ const TitleUpdater = () => {
       case "/registration":
         title += " Registration";
         break;
+        case "/verify-email":
+        title += " Verify Email";
+        break;
       case "/outside-registration":
         title += " Outside Registration";
         break;

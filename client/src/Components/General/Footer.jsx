@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 
 function Footer() {
   const location = useLocation();
-  const hiddenRoutes = ["/login", "/register", "/profile","/outside-registration","/registration","/forget-password-token-verification","/forget-password","/verify-email"]; // Add routes where the footer should be hidden
+  const hiddenRoutes = ["/login", "/register", "/profile","/outside-registration","/registration","/forget-password-token-verification","/forget-password","/verify-email","/dashboard","/culraveventpage","/avishkareventpage"]; // Add routes where the footer should be hidden
 
   // Check if the current route matches any of the hidden routes
   const shouldHideFooter = hiddenRoutes.includes(location.pathname);

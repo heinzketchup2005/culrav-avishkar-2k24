@@ -40,7 +40,7 @@ const createTeam = async (req, res, next) => {
       });
     }
 
-    const newTeam = await Team.create({ teamName, leader, size});
+    const newTeam = await Team.create({ teamName, leader, size });
     newTeam.acceptedMembers = [...newTeam.acceptedMembers, leader];
     ld.participatingTeam = [...ld.participatingTeam, newTeam._id];
     await ld.save();
@@ -51,8 +51,8 @@ const createTeam = async (req, res, next) => {
       msg: "Team Created!",
       team: newTeam,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -256,12 +256,12 @@ const sendTeamInvite = async (req, res, next) => {
     }
     // leader can not sent the invite to himself
 
-    if(targetUser._id === leaderId){
+    if (targetUser._id === leaderId) {
       return res.status(400).json({
-        ok:false,
-        msg:"You can not send team invite to yourself"
-      })
-    } 
+        ok: false,
+        msg: "You can not send team invite to yourself",
+      });
+    }
 
     const targetUserId = JSON.stringify(targetUser._id);
 

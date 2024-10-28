@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 import useAuth from "../../../lib/useAuth";
 
 // Base URL for all requests (updated for better fallback)
@@ -11,9 +12,17 @@ const apiClient = axios.create({
   baseURL: "http://localhost:3000", // Use proper env variable for the base URL
 });
 
+
+
 function VerifyEmail() {
   const location = useLocation();
   const email = location.state?.email; // Get email from location state
+
+  const checkEmail=(email)=> {
+    const emailRegex = /^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@mnnit\.ac\.in$/;
+    return emailRegex.test(email);
+  };
+  
   const {
     register,
     handleSubmit,
@@ -21,16 +30,9 @@ function VerifyEmail() {
   } = useForm(); // Added formState for error handling
   const navigate = useNavigate();
 
-  // const auth = useAuth();
-  // useEffect(() => {
-  //   if (auth) {
-  //     navigate("/");
-  //   }
-  // }, [useAuth]);
-
   useEffect(() => {
     console.log(location);
-    if (!email || email.trim() == "") {
+    if (!email || email.trim() === "") {
       navigate("/registration");
     }
   }, [email, navigate]);
@@ -49,12 +51,30 @@ function VerifyEmail() {
 
       // Check if verification was successful
       if (response.status === 200) {
-        navigate("/login"); // Navigate to login on success
+        toast.success("Email verification successful!");
+        // Check if the email is inside or outside college
+        if (checkEmail(email)) {
+          navigate("/login"); // Navigate to login for inside college
+        } else {
+          navigate("/outside-registration/payFee", { state: { email: data.email } }); // Navigate to pay fee for outside college
+        }
       } else {
+        toast.error("Verification failed. Please try again.");
         console.log("Verification failed:", response.data); // Log failed verification
       }
     } catch (error) {
       // Improved error logging
+      toast.error("Error during verification. Please try again.", {
+        position: 'bottom-right',
+        style: {
+          background: "#2D2D2D",
+          color: "#FFFAF0",
+        },
+        iconTheme: {
+          primary: "#F54E25",
+          secondary: "#FFFAF0",
+        },
+      });
       if (error.response) {
         console.log("Error during verification:", error.response.data.message);
       } else {
@@ -97,6 +117,7 @@ function VerifyEmail() {
           </Button>
         </form>
       </div>
+      <Toaster/>
     </div>
   );
 }
