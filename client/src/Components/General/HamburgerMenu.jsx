@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { signoutSuccess } from "@/redux/auth/authSlice";
 import useAuth from "../../lib/useAuth";
 
+import hamburgerBg from "../../assets/Home/HamburgerBg.jpg"
+
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const auth = useAuth();
@@ -32,12 +34,18 @@ const HamburgerMenu = () => {
       </div>
 
       <div
-        className={`fixed inset-0 py-16 w-full h-full bg-zinc-800 text-white transition-all duration-700 ease-in-out transform ${
-          isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-        } z-40`}
-      >
-        <nav className="flex flex-col justify-center gap-32 items-center h-full text-4xl font-bebas text-navlink">
-          <ul className="flex flex-col items-center justify-center gap-4">
+      className={`fixed inset-0 py-16 w-full h-full text-white transition-all duration-700 ease-in-out transform ${
+        isOpen ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+      } z-40`}
+      style={{
+        backgroundImage: `url(${hamburgerBg})`, 
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+      }}
+    >
+        <nav className="flex flex-col justify-center gap-12 items-center h-full relative text-4xl font-bebas text-navlink">
+          <div className="logo absolute w-32 h-14 bg-red-500 -top-[5.5vh] left-4"></div>
+          <ul className="flex flex-col items-center justify-center gap-1">
             <li className="py-2 px-4 hover:text-register transition-all duration-300 ease-in-out">
               <a href="#">CULRAV</a>
             </li>
