@@ -136,3 +136,35 @@ html {
 .scrollbar-hidden::-webkit-scrollbar {
   display: none; 
 }
+
+.culrav-background {
+    background-image: url('./images/gridfull.png'),url('./images//noiseEffect.png'), url('./images/culrav-bg.png');
+    background-repeat: repeat, repeat, no-repeat;
+    background-position: center, center, center 20vh;
+    background-size: contain, contain, cover;
+}
+
+@media (max-width: 640px) {
+    .culrav-background {
+        background-image: url('./images/gridfull.png'), url('./images//noiseEffect.png'), url('./images/culrav-bgmobile.png');
+        background-repeat: repeat, repeat, repeat;
+        background-position: center, center, center 50px ;
+        background-size: contain, contain, contain;
+    }
+}
+.culrav-Landing-background {
+    background-image: url('./images/gridfull.png'),url('./images/noiseEffect.png'), url('./images/culrav-bg.png');
+    background-repeat: repeat, repeat, no-repeat;
+    background-position: center, center, center 50vh;
+    background-size: contain, contain, cover;
+}
+
+@media (max-width: 640px) {
+    .culrav-Landing-background {
+        background-image: url('./images/gridfull.png'), url('./images/noiseEffect.png'), url('./images/culrav-bgmobile.png');
+        background-repeat: repeat, repeat, repeat;
+        background-position: center, center, center 100vh ;
+        background-size: contain, contain, contain;
+    }
+}
+

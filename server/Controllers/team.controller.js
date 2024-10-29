@@ -2,6 +2,7 @@
 
 import Team from "../Models/team.model.js";
 import User from "../Models/user.model.js";
+import Event from "../Models/event.model.js"
 
 //wherever [teamId and userId means objectId(_id) of the document created by mongoDB]
 const createTeam = async (req, res, next) => {
@@ -9,15 +10,15 @@ const createTeam = async (req, res, next) => {
 
   if (!teamName) {
     return res.status(400).json({
-      ok: false,
-      msg: "Team name is missing",
+      success: false,
+      message: "Team name is missing",
     });
   }
 
   if (!leader) {
     return res.status(400).json({
-      ok: false,
-      msg: "Leader ID is missing.",
+      success: false,
+      message: "Leader ID is missing.",
     });
   }
 
@@ -25,8 +26,8 @@ const createTeam = async (req, res, next) => {
     const ld = await User.findById({ _id: leader });
     if (!ld) {
       return res.status(422).json({
-        ok: false,
-        msg: "can't create team as leaderId is not valid or leader is not registered",
+        success: false,
+        message: "can't create team as leaderId is not valid or leader is not registered",
       });
     }
 
@@ -34,8 +35,8 @@ const createTeam = async (req, res, next) => {
 
     if (tm) {
       return res.status(409).json({
-        ok: false,
-        msg: "Team with same name already exists",
+        success: false,
+        message: "Team with same name already exists",
         team: tm,
       });
     }
@@ -47,8 +48,8 @@ const createTeam = async (req, res, next) => {
     await newTeam.save();
 
     return res.status(200).json({
-      ok: true,
-      msg: "Team Created!",
+      success: true,
+      message: "Team Created!",
       team: newTeam,
     });
   } catch (error) {
@@ -63,14 +64,14 @@ const updateTeam = async (req, res, next) => {
 
   if (!teamName) {
     return res.status(400).json({
-      ok: false,
-      msg: "Team name is missing.",
+      success: false,
+      message: "Team name is missing.",
     });
   }
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "TeamId is missing or Invalid.",
+      success: false,
+      message: "TeamId is missing or Invalid.",
     });
   }
 
@@ -79,23 +80,23 @@ const updateTeam = async (req, res, next) => {
 
     if (!oldtm) {
       return res.status(404).json({
-        ok: false,
-        msg: "TeamId is invalid or Team Does not exist",
+        success: false,
+        message: "TeamId is invalid or Team Does not exist",
       });
     }
 
     const registeredEventsByThisTeam = oldtm.registeredEvents;
     if (registeredEventsByThisTeam.length > 0) {
       return res.status(409).json({
-        ok: false,
-        msg: "This team is already registered for some event/events",
+        success: false,
+        message: "This team is already registered for some event/events",
       });
     }
 
     if (oldtm.teamName === teamName) {
       return res.status(409).json({
-        ok: false,
-        msg: "Same team name provided as old one",
+        success: false,
+        message: "Same team name provided as old one",
       });
     }
 
@@ -106,8 +107,8 @@ const updateTeam = async (req, res, next) => {
     );
 
     res.status(200).json({
-      ok: true,
-      msg: "Updated!",
+      success: true,
+      message: "Updated!",
       team: updatedTeam,
     });
   } catch (err) {
@@ -120,15 +121,15 @@ const deleteTeam = async (req, res, next) => {
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "Provide team ID",
+      success: false,
+      message: "Provide team ID",
     });
   }
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId missing",
+      success: false,
+      message: "userId missing",
     });
   }
 
@@ -146,24 +147,24 @@ const deleteTeam = async (req, res, next) => {
 
     if (!tm) {
       return res.status(404).json({
-        ok: false,
-        msg: "Team does not exist, can't delete",
+        success: false,
+        message: "Team does not exist, can't delete",
       });
     }
 
     const user = await User.findById({ _id: userId });
     if (!user) {
       return res.status(400).json({
-        ok: false,
-        msg: "userId is invalid",
+        success: false,
+        message: "userId is invalid",
       });
     }
 
     //only leader is allowed to delete the team
     if (JSON.stringify(tm.leader) != JSON.stringify(userId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "Only leader can delete the team",
+        success: false,
+        message: "Only leader can delete the team",
       });
     }
 
@@ -171,8 +172,8 @@ const deleteTeam = async (req, res, next) => {
     const registeredEventsByThisTeam = tm.registeredEvents;
     if (registeredEventsByThisTeam.length > 0) {
       return res.status(409).json({
-        ok: false,
-        msg: "This team is already registered for some event/events",
+        success: false,
+        message: "This team is already registered for some event/events",
       });
     }
     //first remove all the references of this team. [otherwise it will cause deletion anomaly]
@@ -202,8 +203,8 @@ const deleteTeam = async (req, res, next) => {
     const deletedTeam = await Team.findByIdAndDelete({ _id: teamId });
 
     res.status(200).json({
-      ok: true,
-      msg: "Deleted",
+      success: true,
+      message: "Deleted",
       team: deletedTeam,
     });
   } catch (err) {
@@ -218,21 +219,21 @@ const sendTeamInvite = async (req, res, next) => {
 
   if (!teamName) {
     return res.status(400).json({
-      ok: false,
-      msg: "TeamName missing",
+      success: false,
+      message: "TeamName missing",
     });
   }
 
   if (!sendToEmail) {
     return res.status(400).json({
-      ok: false,
-      msg: "Recipient email address is missing",
+      success: false,
+      message: "Recipient email address is missing",
     });
   }
   if (!leaderId) {
     return res.status(400).json({
-      ok: false,
-      msg: "Leader ID is missing",
+      success: false,
+      message: "Leader ID is missing",
     });
   }
 
@@ -241,25 +242,34 @@ const sendTeamInvite = async (req, res, next) => {
 
     if (!tm) {
       return res.status(404).json({
-        ok: false,
-        msg: "Invalid team name or invalid leaderID",
+        success: false,
+        message: "Invalid team name or invalid leaderID",
       });
+    }
+
+    //check if this team is participating in any event, if so you can't add members.
+    
+    if(tm.registeredEvents.length > 0){
+      return res.status(400).json({
+        success:false,
+        message:"Team is already participating in any event, can't send the invite"
+      })
     }
 
     const targetUser = await User.findOne({ email: sendToEmail });
 
     if (!targetUser) {
       return res.status(404).json({
-        ok: false,
-        msg: "targetUser is not registered.",
+        success: false,
+        message: "targetUser is not registered.",
       });
     }
     // leader can not sent the invite to himself
 
     if (targetUser._id === leaderId) {
       return res.status(400).json({
-        ok: false,
-        msg: "You can not send team invite to yourself",
+        success: false,
+        message: "You can not send team invite to yourself",
       });
     }
 
@@ -272,8 +282,8 @@ const sendTeamInvite = async (req, res, next) => {
       const currUserId = JSON.stringify(acceptedMembersArray[i]);
       if (targetUserId === currUserId) {
         return res.status(409).json({
-          ok: false,
-          msg: "User is already in the team and accepted by leader",
+          success: false,
+          message: "User is already in the team and accepted by leader",
         });
       }
     }
@@ -283,8 +293,8 @@ const sendTeamInvite = async (req, res, next) => {
 
       if (currUserId === targetUserId) {
         return res.status(409).json({
-          ok: false,
-          msg: "Team Invitation Already sent.",
+          success: false,
+          message: "Team Invitation Already sent.",
         });
       }
     }
@@ -294,8 +304,8 @@ const sendTeamInvite = async (req, res, next) => {
 
     if (currentTeamSize >= maxTeamSize) {
       return res.status(409).json({
-        ok: false,
-        msg: "Team size is currently full",
+        success: false,
+        message: "Team size is currently full",
       });
     }
 
@@ -306,8 +316,8 @@ const sendTeamInvite = async (req, res, next) => {
     await targetUser.save();
 
     res.status(200).json({
-      ok: true,
-      msg: `Invite sent successfully to ${targetUser.name}`,
+      success: true,
+      message: `Invite sent successfully to ${targetUser.name}`,
     });
   } catch (err) {
     next(err);
@@ -319,8 +329,8 @@ const getAllTeamInvitesForAUser = async (req, res, next) => {
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId missing",
+      success: false,
+      message: "userId missing",
     });
   }
 
@@ -334,16 +344,16 @@ const getAllTeamInvitesForAUser = async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "User Not found with provided userID",
+        success: false,
+        message: "User Not found with provided userID",
       });
     }
 
     const pendingTeamInvites = user.pendingTeam;
 
     res.status(200).json({
-      ok: true,
-      msg: "All Invites Retrieved SuccessFully",
+      success: true,
+      message: "All Invites Retrieved SuccessFully",
       teams: pendingTeamInvites,
     });
   } catch (err) {
@@ -356,8 +366,8 @@ const getMembersOfATeam = async (req, res, next) => {
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId missing",
+      success: false,
+      message: "teamId missing",
     });
   }
 
@@ -370,8 +380,8 @@ const getMembersOfATeam = async (req, res, next) => {
     if (!acMembers) {
       return res.status(404).json({
         // Added 404 Not Found for invalid teamId
-        ok: false,
-        msg: "Team not found",
+        success: false,
+        message: "Team not found",
       });
     }
 
@@ -386,8 +396,8 @@ const getMembersOfATeam = async (req, res, next) => {
     ];
 
     res.status(200).json({
-      ok: true,
-      msg: "fetched successfully!",
+      success: true,
+      message: "fetched successfully!",
       acceptedMembers: acMembers.acceptedMembers,
       pendingMembers: pdMembers.pendingMembers,
       allMembers: allMembers,
@@ -402,15 +412,15 @@ const acceptInvite = async (req, res, next) => {
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId missing",
+      success: false,
+      message: "userId missing",
     });
   }
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId missing",
+      success: false,
+      message: "teamId missing",
     });
   }
 
@@ -419,15 +429,15 @@ const acceptInvite = async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "User does not exist",
+        success: false,
+        message: "User does not exist",
       });
     }
 
     if (!user.isFeePaid) {
       return res.status(403).json({
-        ok: false,
-        msg: "First Pay the fee to accept invite",
+        success: false,
+        message: "First Pay the fee to accept invite",
       });
     }
 
@@ -435,16 +445,25 @@ const acceptInvite = async (req, res, next) => {
 
     if (!tm) {
       return res.status(404).json({
-        ok: false,
-        msg: "team not found",
+        success: false,
+        message: "team not found",
       });
+    }
+
+    //check if team is participating in any event. [even though team can't participate in any event if it has any pending memeber].
+
+    if(tm.registeredEvents.length > 0){
+      return res.status(400).json({
+        success:false,
+        message:"Team is already in any event."
+      })
     }
 
     //first check if user have this invite or not
     if (!user.pendingTeam.includes(teamId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "You dont have this invite",
+        success: false,
+        message: "You dont have this invite",
       });
     }
 
@@ -483,8 +502,8 @@ const acceptInvite = async (req, res, next) => {
     await user.save();
 
     res.status(200).json({
-      ok: true,
-      msg: "Invite Accepted!",
+      success: true,
+      message: "Invite Accepted!",
     });
   } catch (err) {
     next(err);
@@ -496,15 +515,15 @@ const rejectInvite = async (req, res, next) => {
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId missing",
+      success: false,
+      message: "userId missing",
     });
   }
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId missing",
+      success: false,
+      message: "teamId missing",
     });
   }
 
@@ -513,8 +532,8 @@ const rejectInvite = async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "User does not exist",
+        success: false,
+        message: "User does not exist",
       });
     }
 
@@ -522,16 +541,16 @@ const rejectInvite = async (req, res, next) => {
 
     if (!tm) {
       return res.status(404).json({
-        ok: false,
-        msg: "team not found",
+        success: false,
+        message: "team not found",
       });
     }
 
     // first check if user have this team invite or not.
     if (!user.pendingTeam.includes(teamId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "You dont have this invite",
+        success: false,
+        message: "You dont have this invite",
       });
     }
 
@@ -559,8 +578,8 @@ const rejectInvite = async (req, res, next) => {
     user.save();
 
     res.status(200).json({
-      ok: true,
-      msg: "Invite Rejected!",
+      success: true,
+      message: "Invite Rejected!",
     });
   } catch (err) {
     next(err);
@@ -572,8 +591,8 @@ const userProfile = async (req, res, next) => {
 
   if (!email) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId is missing",
+      success: false,
+      message: "userId is missing",
     });
   }
 
@@ -581,14 +600,14 @@ const userProfile = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "User does not exist",
+        success: false,
+        message: "User does not exist",
       });
     }
 
     res.status(200).json({
-      ok: true,
-      msg: "Fetched Successfully",
+      success: true,
+      message: "Fetched Successfully",
       user,
     });
   } catch (err) {
@@ -601,15 +620,15 @@ const updateResume = async (req, res, next) => {
 
   if (!email) {
     return res.status(400).json({
-      ok: false,
-      msg: "missing userId",
+      success: false,
+      message: "missing userId",
     });
   }
 
   if (!resumeLink) {
     return res.status(400).json({
-      ok: false,
-      msg: "missing resumeLink",
+      success: false,
+      message: "missing resumeLink",
     });
   }
 
@@ -618,8 +637,8 @@ const updateResume = async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "user does not exist",
+        success: false,
+        message: "user does not exist",
       });
     }
 
@@ -627,8 +646,8 @@ const updateResume = async (req, res, next) => {
     user.save();
 
     res.status(200).json({
-      ok: true,
-      msg: "Resume Updated!",
+      success: true,
+      message: "Resume Updated!",
       user,
     });
   } catch (err) {
@@ -641,15 +660,15 @@ const leaveTeam = async (req, res, next) => {
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId missing, can't leave this team",
+      success: false,
+      message: "teamId missing, can't leave this team",
     });
   }
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId missing, can't leave this team",
+      success: false,
+      message: "userId missing, can't leave this team",
     });
   }
 
@@ -658,8 +677,8 @@ const leaveTeam = async (req, res, next) => {
 
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "Not authorized to leave this team",
+        success: false,
+        message: "Not authorized to leave this team",
       });
     }
 
@@ -667,8 +686,8 @@ const leaveTeam = async (req, res, next) => {
 
     if (!tm) {
       return res.status(404).json({
-        ok: false,
-        msg: "Team does not exist",
+        success: false,
+        message: "Team does not exist",
       });
     }
 
@@ -677,8 +696,8 @@ const leaveTeam = async (req, res, next) => {
     const registeredEventsByThisTeam = tm.registeredEvents;
     if (registeredEventsByThisTeam.length > 0) {
       return res.status(400).json({
-        ok: false,
-        msg: "this team is already participating in some event/events, so can's leave team right now",
+        success: false,
+        message: "this team is already participating in some event/events, so can's leave team right now",
       });
     }
 
@@ -686,8 +705,8 @@ const leaveTeam = async (req, res, next) => {
 
     if (JSON.stringify(tm.leader) === JSON.stringify(userId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "leader can't leave the team, however you can delete the team.",
+        success: false,
+        message: "leader can't leave the team, however you can delete the team.",
       });
     }
 
@@ -695,8 +714,8 @@ const leaveTeam = async (req, res, next) => {
 
     if (!tm.acceptedMembers.includes(userId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "this user is not in the team",
+        success: false,
+        message: "this user is not in the team",
       });
     }
 
@@ -725,8 +744,8 @@ const leaveTeam = async (req, res, next) => {
     await user.save();
 
     res.status(200).json({
-      ok: true,
-      msg: "Successfully left the team",
+      success: true,
+      message: "Successfully left the team",
     });
   } catch (err) {
     next(err);
@@ -738,22 +757,22 @@ const kickMember = async (req, res, next) => {
 
   if (!leaderId) {
     return res.status(400).json({
-      ok: false,
-      msg: "leaderId missing",
+      success: false,
+      message: "leaderId missing",
     });
   }
 
   if (!teamId) {
     return res.status(400).json({
-      ok: false,
-      msg: "teamId is missing",
+      success: false,
+      message: "teamId is missing",
     });
   }
 
   if (!userTobeKickedId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userTobeKeckedId is missing",
+      success: false,
+      message: "userTobeKeckedId is missing",
     });
   }
 
@@ -761,24 +780,24 @@ const kickMember = async (req, res, next) => {
     const ld = await User.findById({ _id: leaderId });
     if (!ld) {
       return res.status(404).json({
-        ok: false,
-        msg: "leader id is invalid or does not exist in db",
+        success: false,
+        message: "leader id is invalid or does not exist in db",
       });
     }
 
     const tm = await Team.findById({ _id: teamId });
     if (!tm) {
       return res.status(404).json({
-        ok: true,
-        msg: "team does not exist with teamId",
+        success: true,
+        message: "team does not exist with teamId",
       });
     }
 
     const userToBeKicked = await User.findById({ _id: userTobeKickedId });
     if (!userToBeKicked) {
       return res.status(404).json({
-        ok: false,
-        msg: "target user does not exist",
+        success: false,
+        message: "target user does not exist",
       });
     }
 
@@ -786,8 +805,8 @@ const kickMember = async (req, res, next) => {
     const registeredEventsByThisTeam = tm.registeredEvents;
     if (registeredEventsByThisTeam > 0) {
       return res.status(400).json({
-        ok: false,
-        msg: "can't kick this user beacuse this team is registered for some event/events",
+        success: false,
+        message: "can't kick this user beacuse this team is registered for some event/events",
       });
     }
 
@@ -798,8 +817,8 @@ const kickMember = async (req, res, next) => {
 
     if (currentUserId != teamLeaderId) {
       return res.status(403).json({
-        ok: false,
-        msg: "You are not authorized to kick this user",
+        success: false,
+        message: "You are not authorized to kick this user",
       });
     }
 
@@ -807,8 +826,8 @@ const kickMember = async (req, res, next) => {
 
     if (JSON.stringify(userToBeKicked) === JSON.stringify(tm.leader)) {
       return res.status(400).json({
-        ok: false,
-        msg: "leader can't kick himself, however leader can delete the team",
+        success: false,
+        message: "leader can't kick himself, however leader can delete the team",
       });
     }
 
@@ -816,8 +835,8 @@ const kickMember = async (req, res, next) => {
 
     if (!tm.acceptedMembers.includes(userTobeKickedId)) {
       return res.status(400).json({
-        ok: false,
-        msg: "user is not the in team",
+        success: false,
+        message: "user is not the in team",
       });
     }
 
@@ -843,8 +862,8 @@ const kickMember = async (req, res, next) => {
     await tm.save();
     await userToBeKicked.save();
     res.status(200).json({
-      ok: true,
-      msg: "User kicked out successfully",
+      success: true,
+      message: "User kicked out successfully",
     });
   } catch (err) {
     next(err);
@@ -856,33 +875,39 @@ const getParticipatingTeamsOfAUser = async (req, res, next) => {
 
   if (!userId) {
     return res.status(400).json({
-      ok: false,
-      msg: "userId is missing",
+      success: false,
+      message: "userId is missing",
     });
   }
 
   try {
-    const user = await User.findById({ _id: userId }).populate({
+    const user = await User.findById({ _id: userId }).populate([{
       path: "participatingTeam",
       model: Team,
-      populate: {
-        path: "acceptedMembers",
-        model: User,
-      }
-    });
+      populate: [
+        {
+         path: "acceptedMembers",
+         model: User,
+        },
+        {
+          path:"registeredEvents",
+          model: Event
+        }
+      ],
+    }]);
 
     if (!user) {
       return res.status(404).json({
-        ok: false,
-        msg: "User does Not exist Or No Team",
+        success: false,
+        message: "User does Not exist Or No Team",
       });
     }
 
     const acceptedTeams = user.participatingTeam;
 
     res.status(200).json({
-      ok: true,
-      msg: "fetched successfully!",
+      success: true,
+      message: "fetched successfully!",
       totalTeams: acceptedTeams,
     });
   } catch (err) {

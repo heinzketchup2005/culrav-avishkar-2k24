@@ -21,7 +21,10 @@ const Register = AsyncErrorHandler(async (req, res, next) => {
   if (!email || !password || !phone) {
     return res
       .status(400)
-      .json({ message: "Email, password, and phone are required" });
+      .json({ 
+        success:false,
+        message: "Email, password, and phone are required" 
+      });
   }
 
   try {
@@ -30,21 +33,30 @@ const Register = AsyncErrorHandler(async (req, res, next) => {
       // check college for other college.
       if (!req.body.college) {
         return res.status(400).json({
-          ok: false,
-          msg: "College Name is Missing",
+          success: false,
+          message: "College Name is Missing",
         });
       }
       if (!checkOtherCollegeEmail(email) || !checkPhone(phone)) {
-        return res.status(400).json({ message: "Invalid email or phone" });
+        return res.status(400).json({
+          success:false,
+          message: "Invalid email or phone" 
+        });
       }
     } else {
       if (!checkEmail(email)) {
-        return res.status(400).json({ message: "Invalid email" });
+        return res.status(400).json({ 
+          success:false,
+          message: "Invalid email"
+         });
       }
     }
 
     if (!checkPassword(password) || !checkName(name)) {
-      return res.status(400).json({ message: "Invalid Username or Password" });
+      return res.status(400).json({ 
+        success:false,
+        message: "Invalid Username or Password" 
+      });
     }
 
     // Check if the user already exists
@@ -59,6 +71,7 @@ const Register = AsyncErrorHandler(async (req, res, next) => {
       await VerificationToken.deleteOne({ email });
     } else if (existingUser && existingUser.isVerifiedUser) {
       return res.status(400).json({
+        success:false,
         message: "Email already registered",
         emailVerified: true,
       });
@@ -67,7 +80,10 @@ const Register = AsyncErrorHandler(async (req, res, next) => {
     if (existingPhoneUser) {
       return res
         .status(400)
-        .json({ message: "This Phone Number is already registered" });
+        .json({ 
+          success:false,
+          message: "This Phone Number is already registered" 
+        });
     }
 
     // ........................... checks end...............................
@@ -101,6 +117,7 @@ const Register = AsyncErrorHandler(async (req, res, next) => {
     SendEmail(email, subject, text);
 
     res.status(201).json({
+      success:true,
       message: "User registered successfully",
       emailVerified: false,
     });

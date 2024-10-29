@@ -5,6 +5,7 @@ import getUser from '../userService.js';
 import { useNavigate } from 'react-router-dom';
 import useAuth from "../../../lib/useAuth.js"
 import { getAllTeams, splitTeamsByLeader } from '../services.js';
+import toast from 'react-hot-toast';
 
 function Team() {
 
@@ -26,16 +27,17 @@ function Team() {
         const fetchData = async() => {
             try{
                 const res = await getAllTeams({userId : user._id, token})
-                if(res?.ok){
+                if(res?.success){
                     const givenLeaderId = user._id
                     const totalTeams = res?.totalTeams
                     const {matchingLeaderTeams, nonMatchingLeaderTeams} = splitTeamsByLeader({totalTeams, givenLeaderId})
                     setMyTeams(matchingLeaderTeams)
                     setJoinedTeams(nonMatchingLeaderTeams)
+                    toast.success("teams fetches successfully!")
                 }else{
-                    console.log(res?.msg)
+                    console.log(res?.message)
+                    toast.error(res?.message)
                 }
-
             }catch(err){
                 console.log(err)
             }
@@ -46,49 +48,6 @@ function Team() {
 
     const [showAllTeams, setShowAllTeams] = useState(true);
     const [teamData, setTeamData] = useState({});
-
-    const data = [{
-        teamId: 1,
-        name: "Team Name",
-        leader: { email: "leader@gmail.com" },
-    },
-    {
-        teamId: 2,
-        name: "Team Name",
-        leader: { email: "leader@gmail.com" },
-    },
-    {
-        teamId: 3,
-        name: "Team Name",
-        leader: { email: "leader@gmail.com" },
-    },
-    {
-        teamId: 4,
-        name: "Team Name",
-        leader: { email: "leader@gmail.com" },
-    },
-    {
-        teamId: 5,
-        name: "Team Name",
-        leader: { email: "user@gmail.com" },
-    },
-    {
-        teamId: 6,
-        name: "Team Name",
-        leader: { email: "user@gmail.com" },
-    },
-    {
-        teamId: 7,
-        name: "Team Name",
-        leader: { email: "user@gmail.com" },
-
-    },
-    {
-        teamId: 8,
-        name: "Team Name",
-        leader: { email: "user@gmail.com" },
-
-    }]
 
     const AllData = {myTeams, joinedTeams}
 

@@ -5,6 +5,7 @@ import useAuth from "../../../lib/useAuth.js"
 import { useNavigate } from "react-router-dom";
 import getUser from "../userService.js";
 import { createTeam } from "../services.js";
+import toast from "react-hot-toast";
 
 const CreateTeam = () => {
   const [teamName, setTeamName] = useState("");
@@ -30,9 +31,16 @@ const CreateTeam = () => {
 
   const handleSubmit = async() => {
     try{
-      await createTeam({leader : user._id, teamName , teamSize : teamSize})
+     const res =  await createTeam({leader : user._id, teamName , teamSize : teamSize, token})
+     if(res?.success){
+      console.log("team created!")
+      toast.success(`team ${teamName} created successfully!`)
+     }else{
+      toast.error(res?.message)
+     }
     }catch(err){
       console.log(err)
+      toast.error("internal Server Error")
     }
   }
 

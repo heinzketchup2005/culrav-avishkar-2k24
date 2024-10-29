@@ -30,8 +30,8 @@ function EventCard({ roller, event }) {
               <span
                   className="relative font-bionix text-[#FFFAF0] text-center transform translate-x-[100%] group-hover:translate-x-0 transition-transform duration-500 opacity-0 group-hover:opacity-100 flex justify-center items-center h-full"
                   style={{
-                      fontSize: 'clamp(0.5rem, 1vw, 1.5rem)',
-                      width: 'clamp(200px, 40%, 400px)', // Adjusted text scaling for custom breakpoints
+                      fontSize: 'clamp(1rem, 5vw, 2rem)',
+                      width: 'clamp(150px, 40%, 300px)', // Adjusted text scaling for custom breakpoints
                   }}
               >
                   <span className="hover:text-[#F54E25] group-hover:text-[2.5rem] transition-all duration-300"> {/* Inner span for hover effects */}

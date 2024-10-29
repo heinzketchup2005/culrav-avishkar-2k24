@@ -12,9 +12,9 @@ function Navbar() {
   };
 
   return (
-    <div className="w-[100vw] h-[92px] px-8 py-2 fixed bg-scheduleLargeText flex items-center justify-between z-50">
+    <div className="w-[100vw] custom1980:h-[92px] md:h-[60px] px-8 py-2 fixed bg-scheduleLargeText flex items-center justify-between z-50">
       <div
-        className="logo hover:cursor-pointer w-[30px] h-[90%] md:w-36 bg-transparent md:bg-zinc-600"
+        className="logo hover:cursor-pointer custom1980:w-[9vw] h-[90%] md:w-[12vw] bg-transparent md:bg-zinc-600"
         onClick={handleLogoClick}
       ></div>
 
