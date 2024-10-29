@@ -56,7 +56,7 @@ function VerifyEmail() {
         if (checkEmail(email)) {
           navigate("/login"); // Navigate to login for inside college
         } else {
-          navigate("/outside-registration/payFee", { state: { email: data.email } }); // Navigate to pay fee for outside college
+          navigate("/outside-registration/payFee", { state: { email: email } }); // Navigate to pay fee for outside college
         }
       } else {
         toast.error("Verification failed. Please try again.");

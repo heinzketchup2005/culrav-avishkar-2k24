@@ -81,6 +81,7 @@ const Register = AsyncErrorHandler(async (req, res, next) => {
       userName: email.split("@")[0],
       college: isOtherCollege ? req.body.college : "MNNIT",
       phone: `+91${phone}`, // Append +91 to the phone number
+      paymentLink: null,
     };
 
     const newUser = new User(user);
